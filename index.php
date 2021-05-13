@@ -5,12 +5,12 @@ include('includes/config.php'); //make available the database file in includes/c
 //the below section checks the user email and password. it is responsible for loggin in users once their login details are proved to be true
 if(isset($_POST['login_user'])){
 	$user_email = $_POST['user_email'];
-	$user_password = $_POST['user_password'];
+	$user_password = md5($_POST['user_password']);
 
 	$sql = "SELECT * FROM users WHERE email=:user_email AND user_password=:user_password";
 	$querry=$dbconn->prepare($sql);
-	$querry->bindParam(':$user_email', $user_email, PDO::PARAM_STR);
-	$querry->bindParam(':$user_password', $user_password, PDO::PARAM_STR);
+	$querry->bindParam(':user_email', $user_email, PDO::PARAM_STR);
+	$querry->bindParam(':user_password', $user_password, PDO::PARAM_STR);
 
 	$querry->execute();
 	$rows = $querry->fetchAll(PDO::FETCH_ASSOC);
@@ -19,10 +19,14 @@ if(isset($_POST['login_user'])){
 	{
 		foreach($rows as $row) {
           // setting up session
-          $_SESSION['user_id'] = $row->id;
+          $_SESSION['user_id'] = $row['user_id'];
         }
         header('Location: admin/index.php');
 	}
+	else{
+		echo"<script>alert('something went wrong. please try again')</script>";
+	}
+
 }
 	?>
 	<!DOCTYPE html>
@@ -45,17 +49,17 @@ if(isset($_POST['login_user'])){
 				<img src="assets/img/set.png">
 			</div>
 			<div class="login-content">
+				<!-- a form that collects user credentials and send them for verification -->
+				<form method="POST">
 					<img src="assets/img/logo/logo.png" style="height:60px">
 					<div class="login-text">Log In</div>
-					<!-- a form that collects user credentials and send them for verification -->
-					<form method="POST">
 					<div class="input-div one">
 						<div class="i">
 							<i class="fas fa-user"></i>
 						</div>
 						<div class="div">
 							<h5>User email</h5>
-							<input name="user_email" type="text" class="input">
+							<input  name="user_email" type="text" class="input"  autocomplete="no">
 						</div>
 					</div>
 					<div class="input-div pass">
@@ -64,7 +68,7 @@ if(isset($_POST['login_user'])){
 						</div>
 						<div class="div">
 							<h5>Password</h5>
-							<input name="user_password" type="password" class="input">
+							<input name="user_password" type="password" class="input" autocomplete="off">
 						</div>
 					</div>
 					<a href="#">Forgot Password?</a>
@@ -74,5 +78,6 @@ if(isset($_POST['login_user'])){
 		</div>
 		<script type="text/javascript" src="assets/js/extra-js.js"></script>
 		<script type="text/javascript" src="assets/js/main.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	</body>
 	</html>
