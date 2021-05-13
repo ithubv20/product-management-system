@@ -1,0 +1,13 @@
+/* custom css made for Rubi's product software. All rights reserved */
+
+@font-face {
+  font-family: loginFont;
+  src: url(../font/Nexa_Bold.otf);
+}
+
+.login-text {
+  font-family: loginFont;
+	font-size: 40px;
+	color: #485a63;
+	padding-bottom: 30px;
+}
