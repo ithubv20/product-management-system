@@ -4,7 +4,7 @@
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
     <div class="sidebar-brand-icon rotate-n-0">
-      <i class="fas fa-gem"></i>
+      <img src="assets/img/logo/pms_logo.png" height="30px"/>
     </div>
     <div class="sidebar-brand-text mx-3">Rubi's Admin</div>
   </a>
@@ -77,7 +77,7 @@
 
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="users.php">
                     <i class="fa fa-users"></i>
                     <span>Users</span></a>
                   </li>
