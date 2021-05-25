@@ -16,6 +16,7 @@ if(isset($_POST['reset_pass'])){
 	if($count > 0)
 	{
 		echo"<script>alert('user password updated successfully')</script>";
+	  echo"<script>window.location.href='index.php';</script>";
 	}
 	else{
 		echo"<script>alert('something went wrong. please try again')</script>";

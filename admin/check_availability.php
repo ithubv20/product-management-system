@@ -1,5 +1,5 @@
 <?php
-require_once('includes/config.php');
+require_once('../includes/config.php');;
 // code user email availablity. it activates the password reset button if a correct email has been entered.
 if(!empty($_POST["emailid"])) {
 	$email= $_POST["emailid"];
@@ -16,12 +16,12 @@ if(!empty($_POST["emailid"])) {
 		$cnt=1;
 		if($query -> rowCount() > 0)
 		{
-			echo "<span style='color:green'> Email found! .</span>";
-			 echo "<script>$('#reset_ps').prop('disabled',false);</script>";
+			echo "<span style='color:red'> Email already taken!</span>";
+			 echo "<script>$('#reg_user').prop('disabled',true);</script>";
 		} else{
 
-			echo "<span style='color:red'> Email not found in registered users emails.</span>";
-						echo "<script>$('#reset_ps').prop('disabled',true);</script>";
+			echo "<span style='color:green'> Email available for registration.</span>";
+						echo "<script>$('#reg_user').prop('disabled',false);</script>";
 		}
 	}
 }
