@@ -20,8 +20,16 @@ if(isset($_POST['login_user'])){
 		foreach($rows as $row) {
 			// setting up session
 			$_SESSION['user_id'] = $row['user_id'];
+			$staff_role = $row['role'];
+			if ($staff_role == '1'){
+				// open admin manager panel
+				header('Location: admin/index.php');
+			}else {
+				// open warehouse manager panel
+				header('Location: warehouse-managers/index.php');
+			}
 		}
-		header('Location: admin/index.php');
+
 	}
 	else{
 		echo"<script>alert('something went wrong. please try again')</script>";
