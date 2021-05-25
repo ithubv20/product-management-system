@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 13, 2021 at 04:20 PM
+-- Generation Time: May 25, 2021 at 05:29 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(150) NOT NULL,
   `user_name` varchar(120) NOT NULL,
   `user_password` varchar(250) NOT NULL,
   `email` varchar(120) NOT NULL,
@@ -37,36 +38,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   KEY `role` (`role`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `email`, `role`, `date_created`) VALUES
-(1, 'jim', '21232f297a57a5a743894a0e4a801fc3', 'jim@gmail.com', 1, '2021-05-13 14:20:56');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_roles`
---
-
-DROP TABLE IF EXISTS `user_roles`;
-CREATE TABLE IF NOT EXISTS `user_roles` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_role` varchar(120) NOT NULL,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `user_roles`
---
-
-INSERT INTO `user_roles` (`user_id`, `user_role`, `date_created`) VALUES
-(1, 'admin', '2021-05-13 14:16:02'),
-(2, 'warehouse manager', '2021-05-13 14:16:02');
+INSERT INTO `users` (`user_id`, `full_name`, `user_name`, `user_password`, `email`, `role`, `date_created`) VALUES
+(1, 'James Spader', 'James', 'b4cc344d25a2efe540adbf2678e2304c', 'james@gmail.com', 1, '2021-05-25 14:14:29'),
+(2, 'Peter Banda', 'Peter', '51dc30ddc473d43a6011e9ebba6ca770', 'peter@gmail.com', 2, '2021-05-25 14:16:27');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
