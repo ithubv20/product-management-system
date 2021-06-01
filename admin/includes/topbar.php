@@ -178,10 +178,10 @@ told me that people say this to all dogs, even if they aren't good...</div>
   <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
   <?php
-  $staff_role = $_SESSION['user_id'];
-  $sql = "SELECT user_name FROM users WHERE role = :staff_role";
+  $staff_id = $_SESSION['user_id'];
+  $sql = "SELECT user_name FROM users WHERE user_id = :staff_id";
   $querry=$dbconn->prepare($sql);
-  $querry->bindParam(':staff_role', $staff_role, PDO::PARAM_INT);
+  $querry->bindParam(':staff_id', $staff_id, PDO::PARAM_INT);
 
   $querry->execute();
   $rows = $querry->fetchAll(PDO::FETCH_ASSOC);

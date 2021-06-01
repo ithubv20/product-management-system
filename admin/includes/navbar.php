@@ -82,7 +82,7 @@
                     <span>Users</span></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="settings.php">
                       <i class="fa fa-cogs"></i>
                       <span>Settings</span></a>
                     </li>

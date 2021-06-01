@@ -10,3 +10,17 @@
   border-left: none !important;
   border-right: none !important;
 }
+
+.footer {
+  position: fixed !important;
+  left: 18% !important;
+  bottom: 0 !important;
+  width: 100% !important;
+}
+
+.inner-sidebar{
+  min-height:10vh !important
+}
+.tiny-font{
+  font-size: 13px;
+}
