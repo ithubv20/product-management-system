@@ -29,13 +29,16 @@ else{
                   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <tbody>
                           <tr>
-                            <td class="w-75"> name </td>
-                            <td> average</td>
+                            <td class="w-75"> kg </td>
+                            <td>  <a href="#"> <i class="fas fa-trash-alt"></i></a></td>
+                          </tr>
+                          <tr id="add_unit_of_measure" hidden>
+                            <td class="w-75"> <input type="text" name="input_of_measure" class="form-control" placeholder="enter input i.e kg,cm,ft" required/> </td>
+                              <td><a href="#"><i class="fas fa-save"></i></a></td>
+                          </tr>
                       </tbody>
                     </table>
-                  <div class="form-group">
-                    <button type="submit" id="save_settings" name="save_settings" class="btn btn-success form-control">Save Settings</button>
-                  </div>
+                  <a href="#" onclick="myFunction()"> + add unit of measure</a>
                 </form>
               </div>
             </div>
@@ -45,6 +48,16 @@ else{
     </div>
   </div>
   <div class="footer">
+    <script>
+    function myFunction() {
+    var add_measure = document.getElementById("add_unit_of_measure");
+    if (add_measure.hidden === false) {
+      add_measure.hidden = true
+    } else {
+      add_measure.hidden = false
+    }
+    }
+    </script>
     <?php
     include('includes/scripts.php');
     include('includes/footer.php');

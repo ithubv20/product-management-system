@@ -26,22 +26,27 @@ else{
               <div class="card-body">
                 <strong><p>Operations</p></strong>
                 <form method='POST'>
-                  <p class="tiny-font">The base currency used for all operations</p>
-                  <select class="form-group form-select" name="r_currency">
-                    <option value="1">MK</option>
-                    <option value="2">USD</option>
-                  </select>
-                  <div class="form-group">
-                    <label class="tiny-font"> Default delivery time for sales orders</label>
-                    <input type="number" name="oder_days" class="form-control" placeholder="days" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="tiny-font"> Default lead time for purchase orders</label>
-                    <input type="number" name="lead_time" class="form-control" placeholder="days" required>
-                  </div>
-                  <div class="form-group">
-                    <button type="submit" id="save_settings" name="save_settings" class="btn btn-success form-control">Save Settings</button>
-                  </div>
+                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <tbody>
+                          <tr>
+                            <td class="w-75"> Cutting </td>
+                            <td>  <a href="#"> <i class="fas fa-trash-alt"></i></a></td>
+                          </tr>
+                          <tr>
+                            <td class="w-75"> Gluing </td>
+                            <td>  <a href="#"> <i class="fas fa-trash-alt"></i></a></td>
+                          </tr>
+                          <tr>
+                            <td class="w-75"> Assembly </td>
+                            <td>  <a href="#"> <i class="fas fa-trash-alt"></i></a></td>
+                          </tr>
+                          <tr id="add_unit_of_measure" hidden>
+                            <td class="w-75"> <input type="text" name="input_of_measure" class="form-control" placeholder="enter new operation" required/> </td>
+                              <td><a href="#"><i class="fas fa-save"></i></a></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  <a href="#" onclick="myFunction()"> + add a new operation</a>
                 </form>
               </div>
             </div>
@@ -52,6 +57,7 @@ else{
   </div>
   <div class="footer">
     <?php
+    include('includes/hide_and_show.js');
     include('includes/scripts.php');
     include('includes/footer.php');
 

@@ -26,22 +26,25 @@ else{
               <div class="card-body">
                 <strong><p>Tax Rates</p></strong>
                 <form method='POST'>
-                  <p class="tiny-font">The base currency used for all operations</p>
-                  <select class="form-group form-select" name="r_currency">
-                    <option value="1">MK</option>
-                    <option value="2">USD</option>
-                  </select>
-                  <div class="form-group">
-                    <label class="tiny-font"> Default delivery time for sales orders</label>
-                    <input type="number" name="oder_days" class="form-control" placeholder="days" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="tiny-font"> Default lead time for purchase orders</label>
-                    <input type="number" name="lead_time" class="form-control" placeholder="days" required>
-                  </div>
-                  <div class="form-group">
-                    <button type="submit" id="save_settings" name="save_settings" class="btn btn-success form-control">Save Settings</button>
-                  </div>
+                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                        <th>Rate </th>
+                        <th>Tax Name </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                          <tr>
+                            <td class="w-75"> 20% </td>
+                            <td>VAT</td>
+                          </tr>
+                          <tr id="add_unit_of_measure" hidden>
+                            <td class="w-75"> <input type="text" name="input_of_measure" class="form-control" placeholder="enter percentage" required/> </td>
+                              <td><input type="text" name="input_of_measure" class="form-control" placeholder="desc" required/> </td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  <a href="#" onclick="myFunction()"> + add another tax</a>
                 </form>
               </div>
             </div>
@@ -51,6 +54,16 @@ else{
     </div>
   </div>
   <div class="footer">
+    <script>
+    function myFunction() {
+    var add_measure = document.getElementById("add_unit_of_measure");
+    if (add_measure.hidden === false) {
+      add_measure.hidden = true
+    } else {
+      add_measure.hidden = false
+    }
+    }
+    </script>
     <?php
     include('includes/scripts.php');
     include('includes/footer.php');
