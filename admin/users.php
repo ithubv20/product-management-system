@@ -62,7 +62,7 @@ function checkAvailability() {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+        <img src="../assets/img/logo/logo.png" style="height:30px"><h5 class="modal-title" id="exampleModalLabel">&nbsp | Create User</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -79,14 +79,6 @@ function checkAvailability() {
             <!-- <label>Email</label> -->
             <input type="email" id="emailid"  onBlur="checkAvailability()" name="staff_email" class="form-control" placeholder="Enter Email" required>
           </div>
-          <!-- <div class="form-group">
-          <label>Password</label>
-          <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
-        </div> -->
-        <!-- <div class="form-group">
-        <label>Confirm Password</label>
-        <input type="password" name="confirmpassword" class="form-control" placeholder="Confirm Password" required>
-      </div> -->
       <div>
         <select class="form-select" name="staff_role">
           <option selected>Select User Role</option>
