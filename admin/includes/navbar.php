@@ -49,14 +49,14 @@
             <span>Buy</span></a>
 
           </li>   <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="stock.php">
               <i class="fa fa-database"></i>
               <span>stock</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="items.php">
                 <i class="fa fa-list-ol"></i>
                 <span>Items</span></a>
               </li>

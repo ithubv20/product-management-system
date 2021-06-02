@@ -44,4 +44,10 @@
               <i class="fa fa-wallet"></i>
                 <span>Resources</span></a>
               </li>
+              <!-- Nav Item - Tables -->
+              <li class="nav-item">
+                <a class="nav-link" href="supliers.php">
+                <i class="fa fa-industry" aria-hidden="true"></i>
+                  <span>Supplier</span></a>
+                </li>
           </ul>
