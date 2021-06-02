@@ -68,11 +68,9 @@ include('includes/topbar.php');
 
     <div class="nav1">
             <ul>
-                <li><a href="stock.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;" >All</a></li>
+                <li><a href="sellsquote.php">Quotation</a></li>
                 <li>|</li>
-                <li><a href="stockProducts.php">Products</a></li>
-                <li>|</li>
-                <li><a href="stockMaterials.php">Materials</a></li>
+                <li><a href="sellsOrders.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Sales Orders</a></li>
             </ul>
 
         </div>
@@ -89,37 +87,30 @@ include('includes/topbar.php');
 
      <thead>
     <tr>
-            <th>Name</th>
-            <th>Variant Code</th>
-             <th>Category</th>
-            <th>Supplier</th>
-            <th>Average cost</th>
-             <th>Value in Stock</th>
-             <th>In Stock</th>
-             <th>Expected</th>
-            <th>Committed</th>
-            <th>Missing</th>
-             <th></th>
+            <th>Rank</th>
+            <th>Order #</th>
+             <th>Customer</th>
+            <th>Total Amount</th>
+            <th>Delivery Deadline</th>
+             <th>Sales Items</th>
+             <th>Ingredients</th>
+             <th>Production</th>
+            <th>Delivery</th>
 
           </tr>
         </thead>
         <tbody>
 
             <tr>
-             <td><a href="stockProducts.php" class="prod" style="color: #1cc88a;">Coffe Table</a></td>
-             <td>CT-CO</td>
-             <td>Tables</td>
-             <td>weavers</td>
-             <td>2250000 MWK</td>
-             <td>8000000 MWK</td>
-              <td>3 Pcs</td>
-             <td>0 Pcs</td>
-              <td>3 Pcs</td>
-             <td>0 Pcs</td>
-             <td> <form action="" method="post">
-                    <input type="hidden" name="edit_id" value="">
-                    <button  type="submit" name="edit_btn" class="btn btn-success"><i class="fa fa-plus-square" aria-hidden="true"></i> </button>
-                </form></td>
+             <td>1</td>
+             <td><a href="stockProducts.php" class="prod" style="color: #1cc88a;">SO-21</a></td>
+             <td>Jimmy Kazembe</td>
+             <td>MWK 200000</td>
+             <td>25/05/2020</td>
+             <td>In stock</td>
+              <td>Processed </td>
+             <td>Work in Progress</td>
+              <td>Not Delivered</td>
              </tr>
 
 

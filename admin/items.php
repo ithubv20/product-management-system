@@ -123,7 +123,7 @@ else{
             <td><?php echo htmlentities($row->default_sales_price);?></td>
             <td><?php echo htmlentities($row->cost);?></td>
             <td><?php echo htmlentities($profit);?></td>
-            <td><?php echo htmlentities(($profit * 100) / $row->default_sales_price)."%";?></td>
+            <td><?php echo htmlentities(round(($profit * 100) / $row->default_sales_price, 1))."%";?></td>
             <td><?php echo htmlentities($row->prod_time);?></td>
             <!-- <td>0 Pcs</td>
             <td> <form action="" method="post">
@@ -148,7 +148,7 @@ else{
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form action="users.php" method="POST">
+        <form action="items_processor.php" method="POST">
 
           <div class="modal-body">
 
@@ -162,7 +162,11 @@ else{
             </div>
             <div class="form-group">
               <!-- <label>Email</label> -->
-              <input type="number" name="item_default_selling_price" class="form-control" placeholder="default selling price" required>
+              <input type="number" id="selling_price" name="item_default_selling_price" class="form-control" placeholder="default selling price" required>
+            </div>
+            <div class="form-group">
+              <!-- <label>Email</label> -->
+              <input type="text" id="production_period" name="production_period" class="form-control" placeholder="production hrs(i.e 9hr, 3hr etc)" required>
             </div>
         <div>
           <select class="form-group form-select" name="item_category">
@@ -197,23 +201,19 @@ else{
               foreach ($results as $result) {
                 // below code fetches data in the user_roles tables
                 ?>
-            <div class="col mb-7">
-            <input type="checkbox" id="material" name="required_materials" value="<?php echo htmlentities($result->id);?>"/>
-            <label for="material"><?php echo htmlentities($result->material_name); ?></label>
-          </div>
+            <label for="<?php echo htmlentities($result->id)."material";?>">
+            <input type="checkbox" onclick="totalIt()" id="<?php echo htmlentities($result->id)."material";?>" name="required_materials" value="<?php echo htmlentities($result->purchase_price);?>"/>
+            <?php echo htmlentities($result->material_name); ?></label>&nbsp&nbsp
           <?php }}?>
         </div>
           </div>
           <div class="form-group">
-            <label> Total Cost</label>
-            <input type="text" id="item_cost" class="form-control" name="item_cost" readonly>
+            <label> Total Cost in MK (Materials + labour (20% default selling price))</label>
+            <input type="text" id="total" class="form-control" name="total_item_production_cost" value="0.00" readonly>
           </div>
         </div>
         <div class="form-group">
           <button type="submit" name="create_item" class="btn btn-success form-control">Add an Item</button>
-        </div>
-        <div class="modal-footer">
-          <span id="user-availability-status" style="font-size:12px;"></span>
         </div>
       </div>
 
@@ -222,7 +222,20 @@ else{
   </div>
   </div>
   </div>
-
+  <script>
+  function totalIt() {
+    var input = document.getElementsByName("required_materials");
+    var total = 0;
+    var selling_total = +document.getElementById("selling_price").value;
+    for (var i = 0; i < input.length; i++) {
+      if (input[i].checked) {
+        total += parseFloat(input[i].value);
+      }
+    }
+    total += (20 * selling_total)/100;
+    document.getElementById("total").value = total.toFixed(2);
+  }
+</script>
   <?php
   include('includes/scripts.php');
   include('includes/footer.php');
