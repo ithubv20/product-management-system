@@ -68,9 +68,9 @@ else{
 
   <div class="nav1">
     <ul>
-      <li><a href="stock.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;" >Products</a></li>
+      <li><a href="stock.php" >Products</a></li>
       <li>|</li>
-      <li><a href="stockmaterials.php">Materials</a></li>
+      <li><a href="stockmaterials.php"  class="active1" style="color:#FFFFFF;  background: #1cc88a;">Materials</a></li>
     </ul>
 
   </div>
@@ -79,13 +79,14 @@ else{
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-success">Products in stock</h6>
+      <h6 class="m-0 font-weight-bold text-success">Materials in Stock</h6>
     </div>
     <div class="table-responsive">
       <?php
-      $sql = "SELECT tbl_stock.in_stock, tbl_stock.expected, tbl_stock.committed, tbl_items.item_name, tbl_items.variant_code, tbl_categories.category_description
-      FROM tbl_stock INNER JOIN tbl_items ON tbl_stock.item_name = tbl_items.id
-      INNER JOIN tbl_categories ON tbl_stock.item_category = tbl_categories.id";
+      $sql = "SELECT tbl_stock_material.in_stock, tbl_stock_material.expected, tbl_stock_material.committed, tbl_materials.material_name, tbl_materials.material_code, tbl_categories.category_description, tbl_suppliers.supplier_name
+      FROM tbl_stock_material INNER JOIN tbl_materials ON tbl_stock_material.material_name = tbl_materials.id
+      INNER JOIN tbl_categories ON tbl_stock_material.material_category = tbl_categories.id
+      INNER JOIN tbl_suppliers ON tbl_stock_material.material_supplier = tbl_suppliers.id";
 
       $querry=$dbconn->prepare($sql);
       $querry->execute();
@@ -100,6 +101,7 @@ else{
             <th>Name</th>
             <th>Variant Code</th>
             <th>Category</th>
+            <th>Supplier</th>
             <th>In Stock</th>
             <th>Expected</th>
             <th>Committed</th>
@@ -114,9 +116,10 @@ else{
                 foreach($rows as $row) {
                   ?>
           <tr>
-            <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->item_name);?></a></td>
-            <td><?php echo htmlentities($row->variant_code);?></td>
+            <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->material_name);?></a></td>
+            <td><?php echo htmlentities($row->material_code);?></td>
             <td><?php echo htmlentities($row->category_description);?></td>
+            <td><?php echo htmlentities($row->supplier_name);?></td>
             <td><?php echo htmlentities($row->in_stock);?></td>
             <td><?php echo htmlentities($row->expected);?></td>
             <td><?php echo htmlentities($row->committed);?></td>
@@ -128,7 +131,7 @@ else{
                     echo htmlentities(0); ?>
                    </td>
             <td>
-            <a href="#" class="tiny-font"> <i class="fa fa-plus-square" aria-hidden="true"></i> Make</a>
+            <a href="#" class="tiny-font"> <i class="fa fa-plus-square" aria-hidden="true"></i> Buy</a>
             </td>
           </tr>
         <?php }}?>

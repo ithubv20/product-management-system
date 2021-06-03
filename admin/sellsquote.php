@@ -20,6 +20,21 @@ if(isset($_GET['quote_id'])){
        echo ("<script>alert('something went wrong')</script>");
    }
 }
+if(isset($_GET['del_id'])){
+   $delete_id = intval($_GET['del_id']);
+   $sql = "DELETE FROM `tbl_sales_orders` WHERE id = :delete_id";
+   $query = $dbconn -> prepare($sql);
+   $query->bindParam(':delete_id',$delete_id, PDO::PARAM_INT);
+   $query->execute();
+   $count =$query->rowCount();
+   if($count > 0){
+     echo ("<script>alert('quotation deleted successfully')</script>");
+    echo ('<script>window.location.href = "sellsquote.php";</script>');
+  }
+   else{
+       echo ("<script>alert('something went wrong')</script>");
+   }
+}
 else{
   include('includes/header.php');
   include('includes/navbar.php');
@@ -139,7 +154,7 @@ else{
             <td><?php echo htmlentities($row->customer_name);?></td>
             <td><?php echo htmlentities($row->total_amount);?></td>
             <td><?php echo htmlentities($row->delivery_deadline);?></td>
-            <td><a href="sellsquote.php?quote_id=<?php echo $row->id ?>" onclick="return confirm('confirm quotation?')">Confirm Order</a> | <a href="#">Delete</a></td>
+            <td><a href="sellsquote.php?quote_id=<?php echo $row->id ?>" onclick="return confirm('confirm quotation?')">Confirm Order</a> | <a href="sellsquote.php?del_id=<?php echo $row->id ?>"  onclick="return confirm('Delete quotation?')">Delete</a></td>
           </tr>
             <?php $cnt++;}}?>
 
