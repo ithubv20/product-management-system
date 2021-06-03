@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 02, 2021 at 04:05 PM
+-- Generation Time: Jun 03, 2021 at 06:02 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -98,10 +98,11 @@ CREATE TABLE IF NOT EXISTS `tbl_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_name` varchar(150) NOT NULL,
   `variant_code` varchar(150) NOT NULL,
+  `category` int(11) NOT NULL DEFAULT '0',
+  `default_supplier` int(11) NOT NULL DEFAULT '1',
   `default_sales_price` int(11) NOT NULL,
   `cost` float NOT NULL,
   `prod_time` varchar(150) NOT NULL,
-  `category` int(11) NOT NULL DEFAULT '0',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
@@ -110,11 +111,11 @@ CREATE TABLE IF NOT EXISTS `tbl_items` (
 -- Dumping data for table `tbl_items`
 --
 
-INSERT INTO `tbl_items` (`id`, `item_name`, `variant_code`, `default_sales_price`, `cost`, `prod_time`, `category`, `date_created`) VALUES
-(1, 'Coffee Table', 'CT-CO', 50000, 30000, '9hr', 3, '2021-06-02 07:34:42'),
-(2, 'Dinning Table', 'DN-TB', 40000, 20000, '20hr', 3, '2021-06-02 07:34:42'),
-(3, 'Drawers', 'DR', 3000, 1850, '2hr', 3, '2021-06-02 13:00:31'),
-(4, 'L-shape sofa set', 'L-SF', 200000, 41000, '30hr', 3, '2021-06-02 13:09:28');
+INSERT INTO `tbl_items` (`id`, `item_name`, `variant_code`, `category`, `default_supplier`, `default_sales_price`, `cost`, `prod_time`, `date_created`) VALUES
+(1, 'Coffee Table', 'CT-CO', 3, 1, 50000, 30000, '9hr', '2021-06-02 07:34:42'),
+(2, 'Dinning Table', 'DN-TB', 3, 1, 40000, 20000, '20hr', '2021-06-02 07:34:42'),
+(3, 'Drawers', 'DR', 3, 1, 3000, 1850, '2hr', '2021-06-02 13:00:31'),
+(4, 'L-shape sofa set', 'L-SF', 3, 1, 200000, 41000, '30hr', '2021-06-02 13:09:28');
 
 -- --------------------------------------------------------
 
@@ -199,16 +200,21 @@ DROP TABLE IF EXISTS `tbl_sales_orders`;
 CREATE TABLE IF NOT EXISTS `tbl_sales_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_number` varchar(150) NOT NULL,
+  `item` int(11) NOT NULL,
   `customer_name` varchar(150) NOT NULL,
   `total_amount` int(11) NOT NULL,
   `delivery_deadline` varchar(150) NOT NULL,
-  `sales_item` int(11) NOT NULL,
-  `ingredients` int(11) NOT NULL,
-  `production` int(11) NOT NULL,
-  `delivery_status` int(11) NOT NULL,
-  `date_ordered` int(11) NOT NULL,
+  `order_status` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_sales_orders`
+--
+
+INSERT INTO `tbl_sales_orders` (`id`, `order_number`, `item`, `customer_name`, `total_amount`, `delivery_deadline`, `order_status`) VALUES
+(3, 'LN-001', 2, 'Lines Phiri', 160000, '2021-06-17', 1),
+(4, 'S-001', 3, 'Saul Gama', 12000, '2021-06-10', 0);
 
 -- --------------------------------------------------------
 
@@ -220,13 +226,54 @@ DROP TABLE IF EXISTS `tbl_stock`;
 CREATE TABLE IF NOT EXISTS `tbl_stock` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_name` int(11) NOT NULL,
-  `stock_value` int(11) NOT NULL,
+  `item_category` int(11) NOT NULL,
+  `item_supplier` int(11) NOT NULL,
   `in_stock` int(11) NOT NULL,
   `expected` int(11) NOT NULL,
   `committed` int(11) NOT NULL,
-  `missing` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `item_name` (`item_name`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_stock`
+--
+
+INSERT INTO `tbl_stock` (`id`, `item_name`, `item_category`, `item_supplier`, `in_stock`, `expected`, `committed`) VALUES
+(1, 1, 3, 1, 3, 1, 3),
+(2, 2, 3, 1, 1, 0, 3),
+(3, 3, 3, 1, 4, 0, 2),
+(4, 4, 3, 1, 2, 2, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_stock_material`
+--
+
+DROP TABLE IF EXISTS `tbl_stock_material`;
+CREATE TABLE IF NOT EXISTS `tbl_stock_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `material_name` int(11) NOT NULL,
+  `material_category` int(11) NOT NULL,
+  `material_supplier` int(11) NOT NULL,
+  `in_stock` int(11) NOT NULL,
+  `expected` int(11) NOT NULL,
+  `committed` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `item_name` (`material_name`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_stock_material`
+--
+
+INSERT INTO `tbl_stock_material` (`id`, `material_name`, `material_category`, `material_supplier`, `in_stock`, `expected`, `committed`) VALUES
+(1, 1, 1, 1, 3, 0, 4),
+(2, 2, 1, 1, 3, 0, 5),
+(3, 3, 1, 2, 3, 3, 2),
+(4, 4, 3, 2, 4, 1, 8),
+(5, 5, 1, 1, 10, 2, 12);
 
 -- --------------------------------------------------------
 
