@@ -123,15 +123,22 @@ else{
 
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-success">Create Quotation
-
-      </h6>
+      <div class="row mb-12">
+        <div class="col mb-7 font-weight-bold text-success"
+        <h6 class="m-0">Create Quotation</h6>
+      </div>
+      <div align="right" class="col">
+        <a href="#"  id="print_quotaion" onclick="print_window()">
+          <i class="fa fa-print" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
     </div>
 
     <div class="card-body">
       <div class="container-fluid">
 
-        <form action="quotation_processor.php" method="POST">
+        <form name="print-form" action="quotation_processor.php" method="POST">
           <div class="row">
             <div class="form-group">
               <label for="customer"> Customer</label>
@@ -148,7 +155,7 @@ else{
               <input type="Date" class="form-control" name="end_date" id="end_date">
             </div>
             <div>
-              <input type="submit" style="margin-left:70%"class="btn btn-success" name="submit_order" value="save"/>
+               <input type="submit" style="margin-left:70%"class="btn btn-success" name="submit_order" value="save"/>
             </div>
             <div class="form-group">
               <label id="demo" for="sales_order"> Sales Order </label>
@@ -242,7 +249,11 @@ else{
     document.getElementById("total_vat").innerHTML= (20 * document.getElementById("total_price").value)/100;
     document.getElementById("total_sells").innerHTML=   "MK" + (+document.getElementById("sub_total").innerHTML +   +document.getElementById("total_vat").innerHTML);
   }
+  function print_window(){
+    print("");
+  }
 </script>
+
 <?php
 include('includes/scripts.php');
 include('includes/footer.php');
