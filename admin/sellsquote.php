@@ -5,69 +5,36 @@ include('../includes/config.php');
 if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
+if(isset($_GET['quote_id'])){
+   $quote_id = intval($_GET['quote_id']);
+   $sql = "UPDATE `tbl_sales_orders` SET order_status = 1 WHERE id = :quote_id";
+   $query = $dbconn -> prepare($sql);
+   $query->bindParam(':quote_id',$quote_id, PDO::PARAM_INT);
+   $query->execute();
+   $count =$query->rowCount();
+   if($count > 0){
+     echo ("<script>alert('order confirmed successfully')</script>");
+    echo ('<script>window.location.href = "sellsquote.php";</script>');
+  }
+   else{
+       echo ("<script>alert('something went wrong')</script>");
+   }
+}
 else{
   include('includes/header.php');
   include('includes/navbar.php');
   include('includes/topbar.php');
   ?>
 
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
 
+  <!-- Bootstrap CSS -->
+  <!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css"> -->
 
-  <!-- Begin Page Content -->
   <style type="text/css">
-
-  /*content css*/
-
-  .form-group{
-    border: 0px;
-    border-bottom: 10px;
-    margin-left: 10px;
-
-  }
-  #calc{
-    border: none;
-    border-bottom: solid;
-    border-bottom-width: thin;
-    margin-left: 50%;
-  }
-  #label{
-    border: none;
-    border-bottom: solid;
-    border-bottom-width: thin;
-
-  }
-
-  #put{
-    border: none;
-    margin-left: 65%;
-    text-align: center;
-  }
-
-  #qoute{
-    box-sizing: 50px;
-
-    size: 75px;
-
-
-  }
-
-  #data{
-    border: none;
-    border-bottom: #0000 inset solid;
-    border-bottom-width: thin;
-    box-sizing: 50%
-
-  }
-
-
-  #dataTable{
-
-    padding: 10px;
-    text-align: center;
-    table-layout: auto;
-    border-radius: 10px;
-  }
-  /*nav  css*/
 
   .nav1
   {
@@ -110,10 +77,6 @@ else{
     table-layout: auto;
 
   }
-  </style>
-
-  <style type="text/css">
-
 
 
   </style>
@@ -122,137 +85,75 @@ else{
     <ul>
       <li><a href="sellsquote.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Quotation</a></li>
       <li>|</li>
-      <li><a href="sellsOrders.php">Sales Orders</a></li>
+      <li><a href="sellsorders.php">Sales Orders</a></li>
     </ul>
 
   </div>
 
 
-
-
+  <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-success">Create Quotation
-
-      </h6>
-    </div>
-
-    <div class="card-body">
-      <div class="container-fluid">
-
-        <form action="#" method="POST">
-          <div class="row">
-            <div class="form-group">
-              <label for="customer"> Customer</label>
-              <input type="text" class="form-control" size="50" name="customer" id="customer">
-            </div>
-
-            <div class="form-group">
-              <label for="start_date"> Start Date </label>
-              <input type="Date" class="form-control" name="customer" id="start_date">
-            </div>
-
-            <div class="form-group">
-              <label > End Date </label>
-              <input type="Date" class="form-control" name="customer" id="end_date">
-            </div>
-
-            <div class="form-group">
-              <label id="demo" for="sales_order"> Sales Order </label>
-              <input type="text" size="50" class="form-control" name="customer" id="sales_order">
-            </div>
-
-
-            <div class="form-group">
-              <label for="location"> Location </label>
-              <input type="text" size="50"  class="form-control" name="customer" id="location">
-            </div>
-          </div>
-          <div class="table-responsive">
-
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Item </th>
-                  <th>Quantity </th>
-                  <th>Price per Unit</th>
-                  <th>Total Cost </th>
-                </tr>
-              </thead>
-              <tbody>
-
-                <tr>
-                  <td>1</td>
-
-                  <td><select class="form-control" id="mySelect" onchange="myFunction()">
-                    <option value="0">select an item</option>
-                    <?php
-                    $sql ="SELECT * FROM tbl_items";
-                    $query= $dbconn -> prepare($sql);
-                    $query-> execute();
-                    $results = $query -> fetchAll(PDO::FETCH_OBJ);
-                    $cnt=1;
-                    if($query -> rowCount() > 0)
-                    {
-                      foreach ($results as $result) {
-                        // below code fetches data in the user_roles tables
-                        ?>  <option value="<?php echo htmlentities($result->default_sales_price) ?>"> <?php echo htmlentities($result->item_name);?> </option>
-                      <?php }}?>
-                    </select></td>
-                    <td><input type="number" size="20" class="form-control" id="sells_quantity" name="item_quantity" value="1" onblur="myFunction()"></td>
-                    <td><input type="number" id="sells_price" size="20" class="form-control" name="default_sells_price" value="0.00" readonly></td>
-                    <td><input type="number" id="total_price" size="20" class="form-control" name="total_price"  value="0.00" readonly></td>
-                  </tr>
-
-
-                </tbody>
-              </table>
-
-            </div>
-            <div class="calculations" id="calc">
-              Total Units:  <span id="tot_num" class="mr-2 d-none d-lg-inline text-gray-600 small quote_spacing">0</span> </div>
-              <div class="calculations" id="calc">
-                SubTotal:<span class="mr-2 d-none d-lg-inline text-gray-600 small quote_spacing"  id="sub_total">MK 0</span>
-              </div>
-              <div class="calculations" id="calc">
-                <label for="sells">Tax(20%):</label><span class="mr-2 d-none d-lg-inline text-gray-600 small quote_spacing"  id="total_vat" >MWK 0</span>
-              </div>
-
-              <div class="calculations" id="calc">
-                Total Cost:<span class="mr-2 d-none d-lg-inline text-gray-600 small quote_spacing"  id="total_sells">MWK 0</span>
-              </div>
-            </form>
-
-          </div>
-        </div>
+      <div class="row mb-12">
+        <div class="col mb-7 font-weight-bold text-success"
+        <h6 class="m-0">All</h6>
       </div>
-      <!-- <script>
-      function totalIt() {
-      var sells_amount = document.getElementsById("sells_amount").value;
-      var total = 0;
-      var sells_quantity = +document.getElementById("sells_quantity").value;
-      alert(sells_quantity);
-      total = sells_quantity * sells_amount;
-      document.getElementById("sells_price").value = document.getElementsById("sells_amount").value;
-      document.getElementById("total_price").value = total.toFixed(2);
-    }
-  </script> -->
-  <script>
-  function myFunction() {
-    var item_price = document.getElementById("mySelect").value;
-    var item_quantity = document.getElementById("sells_quantity").value;
-    document.getElementById("sells_price").value = item_price;
-    document.getElementById("total_price").value = item_quantity * item_price;
-    document.getElementById("tot_num").innerHTML= item_quantity;
-    document.getElementById("sub_total").innerHTML=   document.getElementById("total_price").value;
-    document.getElementById("total_vat").innerHTML= (20 * document.getElementById("total_price").value)/100;
-    document.getElementById("total_sells").innerHTML=   "MK" + (+document.getElementById("sub_total").innerHTML +   +document.getElementById("total_vat").innerHTML);
-  }
-</script>
-<?php
-include('includes/scripts.php');
-include('includes/footer.php');
+      <div align="right" class="col">
+        <a href="createsellsquote.php">
+          + Create a new quotation
+        </a>
+      </div>
+    </div>
+    </div>
+    <div class="table-responsive">
+      <?php
+      $sql = "SELECT tbl_sales_orders.id, tbl_sales_orders.order_number, tbl_sales_orders.item, tbl_sales_orders.customer_name, tbl_sales_orders.total_amount, tbl_sales_orders.delivery_deadline, tbl_items.item_name FROM tbl_sales_orders INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id";
+      $querry=$dbconn->prepare($sql);
+      $querry->execute();
+      $rows = $querry->fetchAll(PDO::FETCH_OBJ);
+      $count = $querry->rowCount();
+      $cnt = 1;?>
+      <table class="table table-bordered" id="dataTable" width="120%" cellspacing="0">
+
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Quote #</th>
+            <th>Item</th>
+            <th>Customer</th>
+            <th>Total Amount</th>
+            <th>Valid up-to</th>
+            <th>Action</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <?php if($count > 0)
+              {
+                foreach($rows as $row) {
+                  ?>
+          <tr>
+            <td><?php echo($cnt);?></td>
+            <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->order_number);?></a></td>
+              <td><?php echo htmlentities($row->item_name);?></td>
+            <td><?php echo htmlentities($row->customer_name);?></td>
+            <td><?php echo htmlentities($row->total_amount);?></td>
+            <td><?php echo htmlentities($row->delivery_deadline);?></td>
+            <td><a href="sellsquote.php?quote_id=<?php echo $row->id ?>" onclick="return confirm('confirm quotation?')">Confirm Order</a> | <a href="#">Delete</a></td>
+          </tr>
+            <?php $cnt++;}}?>
+
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+  <!-- /.container-fluid -->
+  <?php
+  include('includes/scripts.php');
+  include('includes/footer.php');
 
 }?>
+<!-- Page level custom scripts -->
+<script src="js/demo/datatables-demo.js"></script>
