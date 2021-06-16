@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 03, 2021 at 06:02 PM
+-- Generation Time: Jun 16, 2021 at 05:54 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -99,23 +99,22 @@ CREATE TABLE IF NOT EXISTS `tbl_items` (
   `item_name` varchar(150) NOT NULL,
   `variant_code` varchar(150) NOT NULL,
   `category` int(11) NOT NULL DEFAULT '0',
-  `default_supplier` int(11) NOT NULL DEFAULT '1',
+  `item_materials` varchar(150) NOT NULL,
+  `item_operations` varchar(150) NOT NULL,
+  `item_resources` varchar(150) NOT NULL,
   `default_sales_price` int(11) NOT NULL,
-  `cost` float NOT NULL,
-  `prod_time` varchar(150) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_items`
 --
 
-INSERT INTO `tbl_items` (`id`, `item_name`, `variant_code`, `category`, `default_supplier`, `default_sales_price`, `cost`, `prod_time`, `date_created`) VALUES
-(1, 'Coffee Table', 'CT-CO', 3, 1, 50000, 30000, '9hr', '2021-06-02 07:34:42'),
-(2, 'Dinning Table', 'DN-TB', 3, 1, 40000, 20000, '20hr', '2021-06-02 07:34:42'),
-(3, 'Drawers', 'DR', 3, 1, 3000, 1850, '2hr', '2021-06-02 13:00:31'),
-(4, 'L-shape sofa set', 'L-SF', 3, 1, 200000, 41000, '30hr', '2021-06-02 13:09:28');
+INSERT INTO `tbl_items` (`id`, `item_name`, `variant_code`, `category`, `item_materials`, `item_operations`, `item_resources`, `default_sales_price`, `date_created`) VALUES
+(1, 'Coffe Table', 'CF-T', 3, 'a:2:{i:0;s:1:\"2\";i:1;s:1:\"3\";}', 'a:3:{i:0;s:1:\"1\";i:1;s:1:\"2\";i:2;s:1:\"3\";}', 'a:1:{i:0;s:1:\"1\";}', 10000, '2021-06-16 11:26:31'),
+(2, 'TV Stand', 'TV-S', 3, 'a:3:{i:0;s:1:\"1\";i:1;s:1:\"3\";i:2;s:1:\"4\";}', 'a:2:{i:0;s:1:\"1\";i:1;s:1:\"3\";}', 'a:1:{i:0;s:1:\"2\";}', 20000, '2021-06-16 11:31:46'),
+(3, 'L-shape sofa set', 'L-SF', 3, 'a:2:{i:0;s:1:\"3\";i:1;s:1:\"4\";}', 'a:3:{i:0;s:1:\"1\";i:1;s:1:\"2\";i:2;s:1:\"3\";}', 'a:1:{i:0;s:1:\"1\";}', 50000, '2021-06-16 15:30:45');
 
 -- --------------------------------------------------------
 
@@ -129,6 +128,7 @@ CREATE TABLE IF NOT EXISTS `tbl_materials` (
   `material_name` varchar(150) NOT NULL,
   `material_code` varchar(150) NOT NULL,
   `category` int(11) NOT NULL,
+  `in_stock` int(10) NOT NULL,
   `default_supplier` int(11) NOT NULL,
   `purchase_price` float NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -139,12 +139,12 @@ CREATE TABLE IF NOT EXISTS `tbl_materials` (
 -- Dumping data for table `tbl_materials`
 --
 
-INSERT INTO `tbl_materials` (`id`, `material_name`, `material_code`, `category`, `default_supplier`, `purchase_price`, `date_created`) VALUES
-(1, 'Paint(black)', 'P-BL', 1, 1, 500, '2021-06-02 08:31:39'),
-(2, 'Paint(brown)', 'P-BR', 1, 1, 350, '2021-06-02 08:31:39'),
-(3, 'wood', 'WD', 1, 2, 400, '2021-06-02 08:33:14'),
-(4, 'Drawer Knobs', 'D-KN', 3, 2, 600, '2021-06-02 09:39:51'),
-(5, 'paint(red)', 'P_RD', 1, 1, 400, '2021-06-02 09:46:38');
+INSERT INTO `tbl_materials` (`id`, `material_name`, `material_code`, `category`, `in_stock`, `default_supplier`, `purchase_price`, `date_created`) VALUES
+(1, 'Paint(black)', 'P-BL', 1, 2, 1, 500, '2021-06-02 08:31:39'),
+(2, 'Paint(brown)', 'P-BR', 1, 20, 1, 350, '2021-06-02 08:31:39'),
+(3, 'wood', 'WD', 1, 6, 2, 400, '2021-06-02 08:33:14'),
+(4, 'Drawer Knobs', 'D-KN', 3, 7, 2, 600, '2021-06-02 09:39:51'),
+(5, 'paint(red)', 'P_RD', 1, 3, 1, 400, '2021-06-02 09:46:38');
 
 -- --------------------------------------------------------
 
@@ -156,6 +156,8 @@ DROP TABLE IF EXISTS `tbl_operations`;
 CREATE TABLE IF NOT EXISTS `tbl_operations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `operation_description` varchar(150) NOT NULL,
+  `time_taken` int(10) NOT NULL,
+  `operation_time_unit` varchar(150) NOT NULL DEFAULT 'hrs',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
@@ -163,10 +165,10 @@ CREATE TABLE IF NOT EXISTS `tbl_operations` (
 -- Dumping data for table `tbl_operations`
 --
 
-INSERT INTO `tbl_operations` (`id`, `operation_description`) VALUES
-(1, 'Cutting '),
-(2, 'Gluing'),
-(3, 'Assembly');
+INSERT INTO `tbl_operations` (`id`, `operation_description`, `time_taken`, `operation_time_unit`) VALUES
+(1, 'cutting', 2, 'hrs'),
+(2, 'gluing', 1, 'hrs'),
+(3, 'assembly', 2, 'hrs');
 
 -- --------------------------------------------------------
 
@@ -187,8 +189,8 @@ CREATE TABLE IF NOT EXISTS `tbl_resources` (
 --
 
 INSERT INTO `tbl_resources` (`id`, `resource_description`, `resource_amount_per_hour`) VALUES
-(1, 'John', 10000),
-(2, 'IT Department', 100000);
+(1, 'John', 1500),
+(2, 'IT Department', 3000);
 
 -- --------------------------------------------------------
 
@@ -201,20 +203,22 @@ CREATE TABLE IF NOT EXISTS `tbl_sales_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_number` varchar(150) NOT NULL,
   `item` int(11) NOT NULL,
+  `order_quantity` int(10) NOT NULL,
   `customer_name` varchar(150) NOT NULL,
   `total_amount` int(11) NOT NULL,
   `delivery_deadline` varchar(150) NOT NULL,
   `order_status` int(11) NOT NULL DEFAULT '0',
+  `make_status` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_sales_orders`
 --
 
-INSERT INTO `tbl_sales_orders` (`id`, `order_number`, `item`, `customer_name`, `total_amount`, `delivery_deadline`, `order_status`) VALUES
-(3, 'LN-001', 2, 'Lines Phiri', 160000, '2021-06-17', 1),
-(4, 'S-001', 3, 'Saul Gama', 12000, '2021-06-10', 0);
+INSERT INTO `tbl_sales_orders` (`id`, `order_number`, `item`, `order_quantity`, `customer_name`, `total_amount`, `delivery_deadline`, `order_status`, `make_status`) VALUES
+(1, 'J-001', 2, 2, 'James Banda', 40000, '2021-06-23', 1, 0),
+(2, 'JC-2001', 3, 1, 'Jackson Banda', 50000, '2021-06-24', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -229,7 +233,8 @@ CREATE TABLE IF NOT EXISTS `tbl_stock` (
   `item_category` int(11) NOT NULL,
   `item_supplier` int(11) NOT NULL,
   `in_stock` int(11) NOT NULL,
-  `expected` int(11) NOT NULL,
+  `expected_items` int(10) NOT NULL DEFAULT '0',
+  `expected_date` date DEFAULT NULL,
   `committed` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `item_name` (`item_name`)
@@ -239,11 +244,11 @@ CREATE TABLE IF NOT EXISTS `tbl_stock` (
 -- Dumping data for table `tbl_stock`
 --
 
-INSERT INTO `tbl_stock` (`id`, `item_name`, `item_category`, `item_supplier`, `in_stock`, `expected`, `committed`) VALUES
-(1, 1, 3, 1, 3, 1, 3),
-(2, 2, 3, 1, 1, 0, 3),
-(3, 3, 3, 1, 4, 0, 2),
-(4, 4, 3, 1, 2, 2, 5);
+INSERT INTO `tbl_stock` (`id`, `item_name`, `item_category`, `item_supplier`, `in_stock`, `expected_items`, `expected_date`, `committed`) VALUES
+(1, 1, 3, 1, 3, 0, '2021-06-13', 3),
+(2, 2, 3, 1, 4, 0, '2021-06-15', 1),
+(3, 3, 3, 1, 0, 0, NULL, 2),
+(4, 4, 3, 1, 2, 0, NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -258,7 +263,8 @@ CREATE TABLE IF NOT EXISTS `tbl_stock_material` (
   `material_category` int(11) NOT NULL,
   `material_supplier` int(11) NOT NULL,
   `in_stock` int(11) NOT NULL,
-  `expected` int(11) NOT NULL,
+  `m_expected_items` int(10) NOT NULL,
+  `m_expected_date` date DEFAULT NULL,
   `committed` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `item_name` (`material_name`)
@@ -268,12 +274,12 @@ CREATE TABLE IF NOT EXISTS `tbl_stock_material` (
 -- Dumping data for table `tbl_stock_material`
 --
 
-INSERT INTO `tbl_stock_material` (`id`, `material_name`, `material_category`, `material_supplier`, `in_stock`, `expected`, `committed`) VALUES
-(1, 1, 1, 1, 3, 0, 4),
-(2, 2, 1, 1, 3, 0, 5),
-(3, 3, 1, 2, 3, 3, 2),
-(4, 4, 3, 2, 4, 1, 8),
-(5, 5, 1, 1, 10, 2, 12);
+INSERT INTO `tbl_stock_material` (`id`, `material_name`, `material_category`, `material_supplier`, `in_stock`, `m_expected_items`, `m_expected_date`, `committed`) VALUES
+(1, 1, 1, 1, 3, 0, NULL, 4),
+(2, 2, 1, 1, 4, 0, NULL, 5),
+(3, 3, 1, 2, 0, 0, '2021-06-17', 2),
+(4, 4, 3, 2, 0, 0, '2021-06-23', 8),
+(5, 5, 1, 1, 10, 0, NULL, 12);
 
 -- --------------------------------------------------------
 
