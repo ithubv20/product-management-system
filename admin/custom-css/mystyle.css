@@ -31,3 +31,11 @@
 .quote_spacing{
   padding-left:50%;
 }
+
+.table_items {
+  text-align: left !important;
+  margin-left: 20px;
+}
+.delivery-background{
+  background-color: #eaebee;
+}

@@ -6,34 +6,34 @@ if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
 if(isset($_GET['quote_id'])){
-   $quote_id = intval($_GET['quote_id']);
-   $sql = "UPDATE `tbl_sales_orders` SET order_status = 1 WHERE id = :quote_id";
-   $query = $dbconn -> prepare($sql);
-   $query->bindParam(':quote_id',$quote_id, PDO::PARAM_INT);
-   $query->execute();
-   $count =$query->rowCount();
-   if($count > 0){
-     echo ("<script>alert('order confirmed successfully')</script>");
+  $quote_id = intval($_GET['quote_id']);
+  $sql = "UPDATE `tbl_sales_orders` SET order_status = 1 WHERE id = :quote_id";
+  $query = $dbconn -> prepare($sql);
+  $query->bindParam(':quote_id',$quote_id, PDO::PARAM_INT);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ("<script>alert('order confirmed successfully')</script>");
     echo ('<script>window.location.href = "sellsquote.php";</script>');
   }
-   else{
-       echo ("<script>alert('something went wrong')</script>");
-   }
+  else{
+    echo ("<script>alert('something went wrong')</script>");
+  }
 }
 if(isset($_GET['del_id'])){
-   $delete_id = intval($_GET['del_id']);
-   $sql = "DELETE FROM `tbl_sales_orders` WHERE id = :delete_id";
-   $query = $dbconn -> prepare($sql);
-   $query->bindParam(':delete_id',$delete_id, PDO::PARAM_INT);
-   $query->execute();
-   $count =$query->rowCount();
-   if($count > 0){
-     echo ("<script>alert('quotation deleted successfully')</script>");
+  $delete_id = intval($_GET['del_id']);
+  $sql = "DELETE FROM `tbl_sales_orders` WHERE id = :delete_id";
+  $query = $dbconn -> prepare($sql);
+  $query->bindParam(':delete_id',$delete_id, PDO::PARAM_INT);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ("<script>alert('quotation deleted successfully')</script>");
     echo ('<script>window.location.href = "sellsquote.php";</script>');
   }
-   else{
-       echo ("<script>alert('something went wrong')</script>");
-   }
+  else{
+    echo ("<script>alert('something went wrong')</script>");
+  }
 }
 else{
   include('includes/header.php');
@@ -119,56 +119,56 @@ else{
         </a>
       </div>
     </div>
-    </div>
-    <div class="table-responsive">
-      <?php
-      $sql = "SELECT tbl_sales_orders.id, tbl_sales_orders.order_number, tbl_sales_orders.item, tbl_sales_orders.customer_name, tbl_sales_orders.total_amount, tbl_sales_orders.delivery_deadline, tbl_items.item_name FROM tbl_sales_orders INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id";
-      $querry=$dbconn->prepare($sql);
-      $querry->execute();
-      $rows = $querry->fetchAll(PDO::FETCH_OBJ);
-      $count = $querry->rowCount();
-      $cnt = 1;?>
-      <table class="table table-bordered" id="dataTable" width="120%" cellspacing="0">
+  </div>
+  <div class="table-responsive">
+    <?php
+    $sql = "SELECT tbl_sales_orders.id, tbl_sales_orders.order_number, tbl_sales_orders.item, tbl_sales_orders.customer_name, tbl_sales_orders.total_amount, tbl_sales_orders.delivery_deadline, tbl_items.item_name FROM tbl_sales_orders INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE tbl_sales_orders.order_status = 0";
+    $querry=$dbconn->prepare($sql);
+    $querry->execute();
+    $rows = $querry->fetchAll(PDO::FETCH_OBJ);
+    $count = $querry->rowCount();
+    $cnt = 1;?>
+    <table class="table table-bordered" id="dataTable" width="120%" cellspacing="0">
 
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Quote #</th>
-            <th>Item</th>
-            <th>Customer</th>
-            <th>Total Amount</th>
-            <th>Valid up-to</th>
-            <th>Action</th>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Quote #</th>
+          <th>Item</th>
+          <th>Customer</th>
+          <th>Total Amount</th>
+          <th>Valid up-to</th>
+          <th>Action</th>
 
-          </tr>
-        </thead>
-        <tbody>
-          <?php if($count > 0)
-              {
-                foreach($rows as $row) {
-                  ?>
-          <tr>
-            <td><?php echo($cnt);?></td>
-            <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->order_number);?></a></td>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if($count > 0)
+        {
+          foreach($rows as $row) {
+            ?>
+            <tr>
+              <td><?php echo($cnt);?></td>
+              <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->order_number);?></a></td>
               <td><?php echo htmlentities($row->item_name);?></td>
-            <td><?php echo htmlentities($row->customer_name);?></td>
-            <td><?php echo htmlentities($row->total_amount);?></td>
-            <td><?php echo htmlentities($row->delivery_deadline);?></td>
-            <td><a href="sellsquote.php?quote_id=<?php echo $row->id ?>" onclick="return confirm('confirm quotation?')">Confirm Order</a> | <a href="sellsquote.php?del_id=<?php echo $row->id ?>"  onclick="return confirm('Delete quotation?')">Delete</a></td>
-          </tr>
+              <td><?php echo htmlentities($row->customer_name);?></td>
+              <td><?php echo htmlentities($row->total_amount);?></td>
+              <td><?php echo htmlentities($row->delivery_deadline);?></td>
+              <td><a href="sellsquote.php?quote_id=<?php echo $row->id ?>" onclick="return confirm('confirm quotation?')">Confirm Order</a> | <a href="sellsquote.php?del_id=<?php echo $row->id ?>"  onclick="return confirm('Delete quotation?')">Delete</a></td>
+            </tr>
             <?php $cnt++;}}?>
 
-        </tbody>
-      </table>
+          </tbody>
+        </table>
 
+      </div>
     </div>
-  </div>
-  <!-- /.container-fluid -->
-  <!-- /.container-fluid -->
-  <?php
-  include('includes/scripts.php');
-  include('includes/footer.php');
+    <!-- /.container-fluid -->
+    <!-- /.container-fluid -->
+    <?php
+    include('includes/scripts.php');
+    include('includes/footer.php');
 
-}?>
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
+  }?>
+  <!-- Page level custom scripts -->
+  <script src="js/demo/datatables-demo.js"></script>

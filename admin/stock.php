@@ -83,9 +83,7 @@ else{
     </div>
     <div class="table-responsive">
       <?php
-      $sql = "SELECT tbl_stock.in_stock, tbl_stock.expected, tbl_stock.committed, tbl_items.item_name, tbl_items.variant_code, tbl_categories.category_description
-      FROM tbl_stock INNER JOIN tbl_items ON tbl_stock.item_name = tbl_items.id
-      INNER JOIN tbl_categories ON tbl_stock.item_category = tbl_categories.id";
+      $sql = "SELECT tbl_stock.in_stock, tbl_stock.expected_items, tbl_stock.committed, tbl_items.item_name, tbl_items.variant_code, tbl_categories.category_description FROM tbl_stock INNER JOIN tbl_items ON tbl_stock.item_name = tbl_items.id INNER JOIN tbl_categories ON tbl_stock.item_category = tbl_categories.id";
 
       $querry=$dbconn->prepare($sql);
       $querry->execute();
@@ -118,9 +116,9 @@ else{
             <td><?php echo htmlentities($row->variant_code);?></td>
             <td><?php echo htmlentities($row->category_description);?></td>
             <td><?php echo htmlentities($row->in_stock);?></td>
-            <td><?php echo htmlentities($row->expected);?></td>
+            <td><?php echo htmlentities($row->expected_items);?></td>
             <td><?php echo htmlentities($row->committed);?></td>
-            <td><?php $missing = ($row->in_stock + $row->expected) - $row->committed;
+            <td><?php $missing = ($row->in_stock + $row->expected_items) - $row->committed;
                  if($missing < 0){?>
                    <div style="color:#f40717"><?php echo htmlentities($missing);?></div>
                  <?php }

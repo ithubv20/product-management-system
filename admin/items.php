@@ -81,164 +81,135 @@ else{
         <h6 class="m-0">All</h6>
       </div>
       <div align="right" class="col">
-        <a href="#"  data-toggle="modal" data-target="#addnewitem">
+        <a href="addnewitem.php">
           + Add a new item
         </a>
       </div>
     </div>
-    </div>
-    <div class="table-responsive">
-      <?php
-      $sql = "SELECT tbl_items.id, tbl_items.item_name, tbl_items.variant_code, tbl_items.default_sales_price, tbl_items.cost, tbl_items.category, tbl_items.prod_time, tbl_categories.category_description FROM tbl_items INNER JOIN tbl_categories ON tbl_items.category = tbl_categories.id";
-    	$querry=$dbconn->prepare($sql);
-    	$querry->execute();
-    	$rows = $querry->fetchAll(PDO::FETCH_OBJ);
-    	$count = $querry->rowCount();
-      ?>
-      <table class="table table-bordered" id="dataTable" width="120%" cellspacing="0">
+  </div>
+  <div class="table-responsive">
+    <?php
+    $sql = "SELECT tbl_items.*, tbl_categories.category_description FROM tbl_items INNER JOIN tbl_categories ON tbl_items.category = tbl_categories.id";
+    $querry=$dbconn->prepare($sql);
+    $querry->execute();
+    $rows = $querry->fetchAll(PDO::FETCH_OBJ);
+    $count = $querry->rowCount();
+    ?>
+    <table class="table table-bordered" id="dataTable" width="120%" cellspacing="0">
 
-        <thead>
-          <tr>
-            <th>Item Name</th>
-            <th>Variant Code</th>
-            <th>Category</th>
-            <th>Default Sales price</th>
-            <th>Production Cost</th>
-            <th>Profit</th>
-            <th>Margin</th>
-            <th>Prod. Time</th>
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Variant Code</th>
+          <th>Category</th>
+          <th>Default Sales price</th>
+          <th>Production Cost</th>
+          <th>Profit</th>
+          <th>Margin</th>
+          <th>Prod. Time</th>
 
-          </tr>
-        </thead>
-        <tbody>
-      <?php if($count > 0)
-          {
-            foreach($rows as $row) {
-              $profit = $row->default_sales_price -  $row->cost;
-              ?>
-          <tr>
-            <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->item_name);?></a></td>
-            <td><?php echo htmlentities($row->variant_code);?></td>
-            <td><?php echo htmlentities($row->category_description);?></td>
-            <td><?php echo htmlentities($row->default_sales_price);?></td>
-            <td><?php echo htmlentities($row->cost);?></td>
-            <td><?php echo htmlentities($profit);?></td>
-            <td><?php echo htmlentities(round(($profit * 100) / $row->default_sales_price, 1))."%";?></td>
-            <td><?php echo htmlentities($row->prod_time);?></td>
-            <!-- <td>0 Pcs</td>
-            <td> <form action="" method="post">
+        </tr>
+      </thead>
+      <tbody>
+        <?php if($count > 0)
+        {
+          foreach($rows as $row) {
+            $default_sales_price = $row->default_sales_price;
+            ?>
+            <tr>
+              <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->item_name);?></a></td>
+              <td><?php echo htmlentities($row->variant_code);?></td>
+              <td><?php echo htmlentities($row->category_description);?></td>
+              <td><?php echo htmlentities(number_format($row->default_sales_price));?></td>
+
+                <?php
+                $required_materials = unserialize($row->item_materials);
+                $required_operations = unserialize($row->item_operations);
+                $required_resources = unserialize($row->item_resources);
+                $total_cost = 0;
+                $production_period = 0;
+                $req_resources = 0;
+                foreach ($required_materials as $materials) {
+                  // get a sum of prices for all required materials
+                  $sql = "SELECT purchase_price FROM tbl_materials WHERE id = $materials";
+                  $querry=$dbconn->prepare($sql);
+                //  $querry->bindParam(':materials', $materials, PDO::PARAM_STR);
+                  $querry->execute();
+                  $rows = $querry->fetchAll(PDO::FETCH_OBJ);
+                  $count = $querry->rowCount();
+                  if($count > 0)
+                  {
+                    foreach($rows as $row) {
+                        $total_cost += $row->purchase_price;
+                     }
+                  }
+                }
+
+                foreach ($required_operations as $operations) {
+                  // get a sum of prices for all required materials
+                  $sql = "SELECT time_taken FROM tbl_operations WHERE id = $operations";
+                  $querry=$dbconn->prepare($sql);
+                  $querry->execute();
+                  $rows = $querry->fetchAll(PDO::FETCH_OBJ);
+                  $count = $querry->rowCount();
+                  if($count > 0)
+                  {
+                    foreach($rows as $row) {
+                        $production_period += $row->time_taken;
+                     }
+                  }
+                }
+
+                foreach ($required_resources as $charge_per_hour) {
+                  // get a sum of prices for all required materials
+                  $sql = "SELECT resource_amount_per_hour FROM tbl_resources WHERE id = $charge_per_hour";
+                  $querry=$dbconn->prepare($sql);
+                  $querry->execute();
+                  $rows = $querry->fetchAll(PDO::FETCH_OBJ);
+                  $count = $querry->rowCount();
+                  if($count > 0)
+                  {
+                    foreach($rows as $row) {
+                        $req_resources += $row->resource_amount_per_hour;
+                     }
+                  }
+                }
+              $total = $total_cost + ($req_resources * $production_period);
+              $profit = $default_sales_price - $total;?>
+              <td><?php echo htmlentities(number_format($total));?></td>
+              <td><?php echo htmlentities(number_format($profit));?></td>
+              <td><?php echo htmlentities(round(($profit * 100) / $default_sales_price, 1))."%";?></td>
+              <td><?php echo htmlentities($production_period." hrs");?></td>
+              <!-- <td>0 Pcs</td>
+              <td> <form action="" method="post">
               <input type="hidden" name="edit_id" value="">
               <button  type="submit" name="edit_btn" class="btn btn-success"><i class="fa fa-plus-square" aria-hidden="true"></i> </button>
             </form></td> -->
           </tr>
         <?php }}?>
-        </tbody>
-      </table>
-
-    </div>
-  </div>
-  <!-- /.container-fluid -->
-  <!-- modal-->
-  <div class="modal fade" id="addnewitem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <img src="../assets/img/logo/logo.png" style="height:30px"><h5 class="modal-title" id="exampleModalLabel">&nbsp | Add New Item</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="items_processor.php" method="POST">
-
-          <div class="modal-body">
-
-            <div class="form-group">
-              <!-- <label> Username </label> -->
-              <input type="text" name="item_name" class="form-control" placeholder="item name" required>
-            </div>
-            <div class="form-group">
-              <!-- <label>Email</label> -->
-              <input type="text" name="item_code" class="form-control" placeholder="item code" required>
-            </div>
-            <div class="form-group">
-              <!-- <label>Email</label> -->
-              <input type="number" id="selling_price" name="item_default_selling_price" class="form-control" placeholder="default selling price" required>
-            </div>
-            <div class="form-group">
-              <!-- <label>Email</label> -->
-              <input type="text" id="production_period" name="production_period" class="form-control" placeholder="production hrs(i.e 9hr, 3hr etc)" required>
-            </div>
-        <div>
-          <select class="form-group form-select" name="item_category">
-            <option selected>Select item category</option>
-            <?php
-            $sql ="SELECT * FROM tbl_categories";
-            $query= $dbconn -> prepare($sql);
-            $query-> execute();
-            $results = $query -> fetchAll(PDO::FETCH_OBJ);
-            $cnt=1;
-            if($query -> rowCount() > 0)
-            {
-              foreach ($results as $result) {
-                // below code fetches data in the user_roles tables
-                ?>
-                <option value="<?php echo htmlentities($result->id) ?>"> <?php echo htmlentities($result->category_description) ?> </option>
-              <?php  }
-
-            } ?>
-          </select>
-          <div class="form-group">Required materials</div>
-          <div class="form-group">
-            <div class="row mb-12">
-            <?php
-            $sql ="SELECT * FROM tbl_materials";
-            $query= $dbconn -> prepare($sql);
-            $query-> execute();
-            $results = $query -> fetchAll(PDO::FETCH_OBJ);
-            $cnt=1;
-            if($query -> rowCount() > 0)
-            {
-              foreach ($results as $result) {
-                // below code fetches data in the user_roles tables
-                ?>
-            <label for="<?php echo htmlentities($result->id)."material";?>">
-            <input type="checkbox" onclick="totalIt()" id="<?php echo htmlentities($result->id)."material";?>" name="required_materials" value="<?php echo htmlentities($result->purchase_price);?>"/>
-            <?php echo htmlentities($result->material_name); ?></label>&nbsp&nbsp
-          <?php }}?>
-        </div>
-          </div>
-          <div class="form-group">
-            <label> Total Cost in MK (Materials + labour (20% default selling price))</label>
-            <input type="text" id="total" class="form-control" name="total_item_production_cost" value="0.00" readonly>
-          </div>
-        </div>
-        <div class="form-group">
-          <button type="submit" name="create_item" class="btn btn-success form-control">Add an Item</button>
-        </div>
-      </div>
-
-    </form>
+      </tbody>
+    </table>
 
   </div>
-  </div>
-  </div>
-  <script>
-  function totalIt() {
-    var input = document.getElementsByName("required_materials");
-    var total = 0;
-    var selling_total = +document.getElementById("selling_price").value;
-    for (var i = 0; i < input.length; i++) {
-      if (input[i].checked) {
-        total += parseFloat(input[i].value);
-      }
+</div>
+
+<script>
+function totalIt() {
+  var input = document.getElementsByName("required_materials[]");
+  var total = 0;
+  var selling_total = +document.getElementById("selling_price").value;
+  for (var i = 0; i < input.length; i++) {
+    if (input[i].checked) {
+      total += parseFloat(input[i].value);
     }
-    total += (20 * selling_total)/100;
-    document.getElementById("total").value = total.toFixed(2);
   }
+  total += (20 * selling_total)/100;
+  document.getElementById("total").value = total.toFixed(2);
+}
 </script>
-  <?php
-  include('includes/scripts.php');
-  include('includes/footer.php');
+<?php
+include('includes/scripts.php');
+include('includes/footer.php');
 
 }?>
 <!-- Page level custom scripts -->
