@@ -44,7 +44,7 @@
 
         <!-- Nav Item - Tables -->
         <li class="nav-item">
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="buymaterials.php">
             <i class="fa fa-cart-plus"></i>
             <span>Buy</span></a>
 
@@ -70,7 +70,7 @@
 
               <!-- Nav Item - Charts -->
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="customers.php">
                   <i class="fa fa-link"></i>
                   <span>Contacts</span></a>
                 </li>

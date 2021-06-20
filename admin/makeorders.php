@@ -82,9 +82,9 @@ else{
 
   <div class="nav1">
     <ul>
-      <li><a href="makeorders.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Schedule</a></li>
+      <li><a href="makeorders.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Open</a></li>
       <li>|</li>
-      <li><a href="#">Tasks</a></li>
+      <li><a href="#">Done</a></li>
     </ul>
 
   </div>
