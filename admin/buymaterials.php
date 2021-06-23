@@ -150,7 +150,7 @@ else{
         <thead>
           <tr>
             <th>Order #</th>
-            <th>Supplier</th>
+            <th>material</th>
             <th>Total amount</th>
             <th>Expected arrival</th>
             <th>Delivery</th>
