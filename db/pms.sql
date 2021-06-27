@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 16, 2021 at 05:54 PM
+-- Generation Time: Jun 27, 2021 at 05:41 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Database: `pms`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_buy_materials`
+--
+
+DROP TABLE IF EXISTS `tbl_buy_materials`;
+CREATE TABLE IF NOT EXISTS `tbl_buy_materials` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `material_id` int(11) NOT NULL,
+  `buy_quantity` int(11) NOT NULL,
+  `arrival_date` date NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_buy_materials`
+--
+
+INSERT INTO `tbl_buy_materials` (`id`, `material_id`, `buy_quantity`, `arrival_date`, `status`) VALUES
+(1, 1, 45, '2021-07-04', 1),
+(2, 1, 10, '2021-06-27', 0),
+(3, 4, 4, '2021-07-11', 0);
 
 -- --------------------------------------------------------
 
@@ -64,6 +89,30 @@ CREATE TABLE IF NOT EXISTS `tbl_currency` (
 INSERT INTO `tbl_currency` (`id`, `cur_abbreviation`, `cur_description`) VALUES
 (1, 'MK', 'Malawi Kwacha'),
 (2, 'USD', 'United States dollar');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_customer`
+--
+
+DROP TABLE IF EXISTS `tbl_customer`;
+CREATE TABLE IF NOT EXISTS `tbl_customer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cus_name` varchar(150) NOT NULL,
+  `cus_email` varchar(255) NOT NULL,
+  `phone_number` int(11) DEFAULT NULL,
+  `admin_comment` text NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_customer`
+--
+
+INSERT INTO `tbl_customer` (`id`, `cus_name`, `cus_email`, `phone_number`, `admin_comment`, `date_created`) VALUES
+(1, 'James spader', 'james@gmail.com', 998678876, 'a good customer', '2021-06-19 13:01:15');
 
 -- --------------------------------------------------------
 
@@ -128,7 +177,6 @@ CREATE TABLE IF NOT EXISTS `tbl_materials` (
   `material_name` varchar(150) NOT NULL,
   `material_code` varchar(150) NOT NULL,
   `category` int(11) NOT NULL,
-  `in_stock` int(10) NOT NULL,
   `default_supplier` int(11) NOT NULL,
   `purchase_price` float NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -139,12 +187,12 @@ CREATE TABLE IF NOT EXISTS `tbl_materials` (
 -- Dumping data for table `tbl_materials`
 --
 
-INSERT INTO `tbl_materials` (`id`, `material_name`, `material_code`, `category`, `in_stock`, `default_supplier`, `purchase_price`, `date_created`) VALUES
-(1, 'Paint(black)', 'P-BL', 1, 2, 1, 500, '2021-06-02 08:31:39'),
-(2, 'Paint(brown)', 'P-BR', 1, 20, 1, 350, '2021-06-02 08:31:39'),
-(3, 'wood', 'WD', 1, 6, 2, 400, '2021-06-02 08:33:14'),
-(4, 'Drawer Knobs', 'D-KN', 3, 7, 2, 600, '2021-06-02 09:39:51'),
-(5, 'paint(red)', 'P_RD', 1, 3, 1, 400, '2021-06-02 09:46:38');
+INSERT INTO `tbl_materials` (`id`, `material_name`, `material_code`, `category`, `default_supplier`, `purchase_price`, `date_created`) VALUES
+(1, 'Paint(black)', 'P-BL', 1, 1, 500, '2021-06-02 08:31:39'),
+(2, 'Paint(brown)', 'P-BR', 1, 1, 350, '2021-06-02 08:31:39'),
+(3, 'wood', 'WD', 1, 2, 400, '2021-06-02 08:33:14'),
+(4, 'Drawer Knobs', 'D-KN', 3, 2, 600, '2021-06-02 09:39:51'),
+(5, 'paint(red)', 'P_RD', 1, 1, 400, '2021-06-02 09:46:38');
 
 -- --------------------------------------------------------
 
@@ -206,19 +254,22 @@ CREATE TABLE IF NOT EXISTS `tbl_sales_orders` (
   `order_quantity` int(10) NOT NULL,
   `customer_name` varchar(150) NOT NULL,
   `total_amount` int(11) NOT NULL,
-  `delivery_deadline` varchar(150) NOT NULL,
+  `delivery_deadline` date DEFAULT NULL,
   `order_status` int(11) NOT NULL DEFAULT '0',
   `make_status` int(10) NOT NULL DEFAULT '0',
+  `order_priority` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_sales_orders`
 --
 
-INSERT INTO `tbl_sales_orders` (`id`, `order_number`, `item`, `order_quantity`, `customer_name`, `total_amount`, `delivery_deadline`, `order_status`, `make_status`) VALUES
-(1, 'J-001', 2, 2, 'James Banda', 40000, '2021-06-23', 1, 0),
-(2, 'JC-2001', 3, 1, 'Jackson Banda', 50000, '2021-06-24', 1, 1);
+INSERT INTO `tbl_sales_orders` (`id`, `order_number`, `item`, `order_quantity`, `customer_name`, `total_amount`, `delivery_deadline`, `order_status`, `make_status`, `order_priority`) VALUES
+(1, 'J-001', 2, 2, 'James Banda', 40000, '2021-07-01', 2, 3, 0),
+(2, 'JC-2001', 3, 1, 'Jackson Banda', 50000, '2021-06-26', 1, 2, 0),
+(4, 'LN-001', 2, 2, 'Lines Phiri', 40000, '2021-06-28', 2, 3, 0),
+(5, 'S-001', 1, 2, 'Saul Gama', 20000, '2021-07-11', 1, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -246,9 +297,8 @@ CREATE TABLE IF NOT EXISTS `tbl_stock` (
 
 INSERT INTO `tbl_stock` (`id`, `item_name`, `item_category`, `item_supplier`, `in_stock`, `expected_items`, `expected_date`, `committed`) VALUES
 (1, 1, 3, 1, 3, 0, '2021-06-13', 3),
-(2, 2, 3, 1, 4, 0, '2021-06-15', 1),
-(3, 3, 3, 1, 0, 0, NULL, 2),
-(4, 4, 3, 1, 2, 0, NULL, 5);
+(2, 2, 3, 1, 1, 0, '2021-06-15', 1),
+(3, 3, 3, 1, 1, 0, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -275,10 +325,10 @@ CREATE TABLE IF NOT EXISTS `tbl_stock_material` (
 --
 
 INSERT INTO `tbl_stock_material` (`id`, `material_name`, `material_category`, `material_supplier`, `in_stock`, `m_expected_items`, `m_expected_date`, `committed`) VALUES
-(1, 1, 1, 1, 3, 0, NULL, 4),
+(1, 1, 1, 1, 2, 0, NULL, 4),
 (2, 2, 1, 1, 4, 0, NULL, 5),
-(3, 3, 1, 2, 0, 0, '2021-06-17', 2),
-(4, 4, 3, 2, 0, 0, '2021-06-23', 8),
+(3, 3, 1, 2, 3, 0, '2021-06-17', 2),
+(4, 4, 3, 2, 5, 0, '2021-06-23', 8),
 (5, 5, 1, 1, 10, 0, NULL, 12);
 
 -- --------------------------------------------------------
@@ -291,17 +341,20 @@ DROP TABLE IF EXISTS `tbl_suppliers`;
 CREATE TABLE IF NOT EXISTS `tbl_suppliers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `supplier_name` varchar(150) NOT NULL,
+  `supplier_phone` int(11) DEFAULT NULL,
+  `supplier_email` varchar(255) DEFAULT NULL,
+  `admin_comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_suppliers`
 --
 
-INSERT INTO `tbl_suppliers` (`id`, `supplier_name`) VALUES
-(1, 'Airspace'),
-(2, 'AtoZ furnitures'),
-(3, 'trusted suppliers group');
+INSERT INTO `tbl_suppliers` (`id`, `supplier_name`, `supplier_phone`, `supplier_email`, `admin_comment`) VALUES
+(1, 'Airspace', NULL, 'airspace@gmail.com', 'late delivery'),
+(2, 'AtoZ furnitures', NULL, 'atoz@yahoo.com', 'supply in time'),
+(4, 'jack banda', NULL, 'jack@gmail.com', 'a good supplier');
 
 -- --------------------------------------------------------
 

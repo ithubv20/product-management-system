@@ -264,7 +264,7 @@ else{
                       if($stock_status != 0 AND $stock_status > $row->order_quantity){?>
                         <td style="background-color: #34b08b; color: #fff"> processed </td>
                       <?php  }
-                      else if($stock_status == 0 AND $any_stock_out == 'False'){?>
+                      else if(($stock_status == 0 OR $stock_status != 0) AND $any_stock_out == 'False'){?>
                         <td style="background-color: #34b08b; color: #fff"> in stock </td>
                       <?php  }
                       else if($any_stock_out == 'True' AND !empty($m_expected_date)){?>
