@@ -142,30 +142,30 @@ else{
           <div class="row">
             <div class="form-group">
               <label for="customer"> Customer</label>
-              <input type="text" class="form-control" size="50" name="customer_name" id="customer">
+              <input type="text" class="form-control" size="50" name="customer_name" id="customer" required>
             </div>
 
             <div class="form-group">
               <label for="start_date"> Start Date </label>
-              <input type="Date" class="form-control" name="start_date" id="start_date">
+              <input type="Date" class="form-control" name="start_date" id="start_date" required>
             </div>
 
             <div class="form-group">
               <label > End Date </label>
-              <input type="Date" class="form-control" name="end_date" id="end_date">
+              <input type="Date" class="form-control" name="end_date" id="end_date" required>
             </div>
             <div>
                <input type="submit" style="margin-left:70%"class="btn btn-success" name="submit_order" value="save"/>
             </div>
             <div class="form-group">
               <label id="demo" for="sales_order"> Sales Order </label>
-              <input type="text" size="50" class="form-control" name="order_number" id="sales_order">
+              <input type="text" size="50" class="form-control" name="order_number" id="sales_order" required>
             </div>
 
 
             <div class="form-group">
               <label for="location"> Location </label>
-              <input type="text" size="50"  class="form-control" name="customer" id="location">
+              <input type="text" size="50"  class="form-control" name="customer" id="location" required>
             </div>
           </div>
           <div class="table-responsive">

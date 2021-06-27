@@ -84,7 +84,7 @@ else{
     <ul>
       <li><a href="buymaterials.php">Open</a></li>
       <li>|</li>
-      <li><a href="receivedmaterials.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Done</a></li>
+      <li><a href="receivedmaterials.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Received Materials</a></li>
     </ul>
 
   </div>

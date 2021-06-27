@@ -82,9 +82,9 @@ else{
 
   <div class="nav1">
     <ul>
-      <li><a href="makeorders.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Open</a></li>
+      <li><a href="makeorders.php">Open</a></li>
       <li>|</li>
-      <li><a href="completemakeorders.php">Done</a></li>
+      <li><a href="completemakeorders.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Done</a></li>
     </ul>
 
   </div>
@@ -97,7 +97,7 @@ else{
     </div>
     <div class="table-responsive">
       <?php
-      $sql = "SELECT tbl_sales_orders.*, tbl_items.item_name, tbl_items.item_materials, tbl_items.item_operations, tbl_stock.in_stock, tbl_stock.expected_date FROM tbl_sales_orders INNER JOIN tbl_stock ON tbl_sales_orders.item = tbl_stock.item_name INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE tbl_sales_orders.order_status = 1 AND (tbl_sales_orders.make_status = 1 OR tbl_sales_orders.make_status = 2)";
+      $sql = "SELECT tbl_sales_orders.*, tbl_items.item_name, tbl_items.item_materials, tbl_items.item_operations, tbl_stock.in_stock, tbl_stock.expected_date FROM tbl_sales_orders INNER JOIN tbl_stock ON tbl_sales_orders.item = tbl_stock.item_name INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE  tbl_sales_orders.make_status = 3";
       $querry=$dbconn->prepare($sql);
       $querry->execute();
       $rows = $querry->fetchAll(PDO::FETCH_OBJ);
@@ -114,7 +114,6 @@ else{
             <th>Quantity</th>
             <th>Prod. time</th>
             <th>Prod. deadline</th>
-            <th>Ingredients</th>
             <th>Production</th>
 
           </tr>
@@ -153,49 +152,7 @@ else{
                 }?>
                 <td><?php echo htmlentities($production_period." hrs");?></td>
                 <td><?php echo htmlentities($d_deadline);?></td>
-                <?php
-                //materials section
-                $stock_materials = unserialize($item_material);
-                $any_stock_out = 'False';
-                $m_expected_date = Array();
-                $not_available = '';
-
-                foreach ($stock_materials as $materials) {
-                  // get a sum of prices for all required materials
-                  $sql = "SELECT * FROM tbl_stock_material WHERE id = $materials";
-                  $querry=$dbconn->prepare($sql);
-                  //  $querry->bindParam(':materials', $materials, PDO::PARAM_STR);
-                  $querry->execute();
-                  $rows = $querry->fetchAll(PDO::FETCH_OBJ);
-                  $count = $querry->rowCount();
-                  if($count > 0)
-                  {
-                    foreach($rows as $row) {
-                      if($row->in_stock == 0){
-                        $any_stock_out = 'True';
-                      }
-                      $m_expected_date[] = $row->m_expected_date;
-                    }
-                  }
-                }
-                if($any_stock_out == 'False'){?>
-                  <td style="background-color: #34b08b; color: #fff"> in stock </td>
-                <?php  }
-                else if($any_stock_out == 'True' AND !empty($m_expected_date)){?>
-                  <td style="background-color: #fea349; color: #000">
-                    Expected<br>
-                    <strong> <?php echo(max($m_expected_date));?> </strong></td>
-                  <?php  }
-                  else{?>
-                    <td style="background-color: #e9004e; color: #fff;">not available</td>
-                  <?php  } ?>
-
-
-                  <td class="delivery-background"><select class="form-select delivery-background" name="delivery_status">
-                    <option value="">Not started</option>
-                    <option value="">Work in progress</option>
-                    <option value="1">Done</option>
-                  </select></td>
+                  <td style="background-color: #34b08b; color: #fff">Completed</td>
                 </tr>
                 <?php $cnt++;}}?>
 

@@ -20,7 +20,7 @@ if(isset($_POST['buy_materials'])){
   $query->execute();
   $lastInsertId = $dbconn->lastInsertId();
   if($lastInsertId){
-    echo ('<script>alert("A new supplier has been added successfully.")</script>');
+    echo ('<script>alert("A new material purchase has been established")</script>');
     echo ('<script>window.location.href = "stockmaterials.php";</script>');
   }
   else {

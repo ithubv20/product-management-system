@@ -117,7 +117,7 @@ else{
             $default_sales_price = $row->default_sales_price;
             ?>
             <tr>
-              <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->item_name);?></a></td>
+              <td><a href="productdetails.php?p_id=<?php echo($row->id);?>" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->item_name);?></a></td>
               <td><?php echo htmlentities($row->variant_code);?></td>
               <td><?php echo htmlentities($row->category_description);?></td>
               <td><?php echo htmlentities(number_format($row->default_sales_price));?></td>

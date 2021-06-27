@@ -5,48 +5,6 @@ include('../includes/config.php');
 if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
-if(isset($_POST['order_id'])){
-  $order_id = $_POST['order_id'];
-  $order_status=$_POST['order_status'];
-
-  if($order_status == 3){
-    $sql = "SELECT tbl_sales_orders.item, tbl_sales_orders.order_quantity, tbl_items.item_materials, tbl_stock.in_stock FROM tbl_sales_orders
-    INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id
-    INNER JOIN tbl_stock ON tbl_sales_orders.item = tbl_stock.item_name WHERE tbl_sales_orders.id = :order_id";
-
-    $querry=$dbconn->prepare($sql);
-    $querry->bindParam(':order_id',$order_id, PDO::PARAM_INT);
-    $querry->execute();
-    $rows = $querry->fetchAll(PDO::FETCH_OBJ);
-    $count = $querry->rowCount();
-    $cnt = 1;
-    if($count > 0)
-        {
-          foreach ($rows as $row) {
-            // code...
-            $add_item_stock = $row->order_quantity + $row->in_stock;
-            $item = $row->item;
-            $sql = "UPDATE `tbl_stock` SET in_stock = :add_item_stock WHERE item_name = :item";
-            $query = $dbconn -> prepare($sql);
-            $query->bindParam(':add_item_stock',$add_item_stock, PDO::PARAM_INT);
-            $query->bindParam(':item',$item, PDO::PARAM_INT);
-            $query->execute();
-          }
-  }
-}
-  $sql = "UPDATE `tbl_sales_orders` SET make_status = :order_status WHERE id = :order_id";
-  $query = $dbconn -> prepare($sql);
-  $query->bindParam(':order_status',$order_status, PDO::PARAM_INT);
-  $query->bindParam(':order_id',$order_id, PDO::PARAM_INT);
-  $query->execute();
-  $count =$query->rowCount();
-  if($count > 0){
-    echo '';
-  }
-  else{
-    pass;
-  }
-}
 
 else{
   include('includes/header.php');
@@ -178,7 +136,7 @@ else{
 
       <form action="items_processor.php" method="POST">
         <?php
-        $o_id=intval($_GET['order_id']);
+        $o_id=intval($_GET['p_id']);
         $sql = "SELECT tbl_sales_orders.*, tbl_items.item_name, tbl_items.item_materials, tbl_items.item_operations, tbl_items.item_resources FROM tbl_sales_orders INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE tbl_sales_orders.id = :o_id";
         $query = $dbconn->prepare($sql);
         $query->bindParam(':o_id',$o_id, PDO::PARAM_INT);

@@ -5,19 +5,51 @@ include('../includes/config.php');
 if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
-else if(isset($_GET['make_id'])){
-  $make_id = intval($_GET['make_id']);
-  $sql = "UPDATE `tbl_sales_orders` SET make_status = 1 WHERE id = :make_id";
-  $query = $dbconn -> prepare($sql);
-  $query->bindParam(':make_id',$make_id, PDO::PARAM_INT);
-  $query->execute();
-  $count =$query->rowCount();
-  if($count > 0){
-    echo ('<script>window.location.href = "sellsorders.php";</script>');
-  }
-  else{
-    echo ("<script>alert('something went wrong')</script>");
-  }
+else if(isset($_GET['r_id'])){
+  $material_id = intval($_GET['r_id']);
+
+  $sql = "SELECT tbl_buy_materials.*, tbl_stock_material.in_stock FROM tbl_buy_materials
+  INNER JOIN tbl_stock_material ON tbl_buy_materials.material_id = tbl_stock_material.material_name WHERE tbl_buy_materials.id = :material_id";
+
+  $querry=$dbconn->prepare($sql);
+  $querry->bindParam(':material_id', $material_id, PDO::PARAM_INT);
+  $querry->execute();
+  $results = $querry->fetchAll(PDO::FETCH_OBJ);
+  $count = $querry->rowCount();
+  if($count > 0)
+      {
+
+        foreach ($results as $result) {
+          // code...
+          $mat_quantity = $result->buy_quantity + $result->in_stock;
+          $material = $result->material_id;
+          $mat_id = $result->id;
+
+          $sql = "UPDATE `tbl_stock_material` SET in_stock = :mat_quantity WHERE material_name = :material";
+          $query = $dbconn -> prepare($sql);
+          $query->bindParam(':mat_quantity',$mat_quantity, PDO::PARAM_INT);
+          $query->bindParam(':material',$material, PDO::PARAM_INT);
+          $query->execute();
+          $count =$query->rowCount();
+          if($count > 0){
+            echo ("<script>alert('material successfully received')</script>");
+
+            $sql = "UPDATE `tbl_buy_materials` SET status = 1 WHERE id = :mat_id";
+            $query = $dbconn -> prepare($sql);
+            $query->bindParam(':mat_id', $mat_id, PDO::PARAM_INT);
+            $query->execute();
+
+            echo ('<script>window.location.href = "buymaterials.php";</script>');
+          }
+          else{
+            echo ("<script>alert('something went wrong')</script>");
+          }
+        }
+      }
+      else{
+        echo ("<script>alert('something went wrong')</script>");
+        echo ('<script>window.location.href = "buymaterials.php";</script>');
+      }
 }
 else{
   include('includes/header.php');
@@ -126,7 +158,7 @@ else{
     <ul>
       <li><a href="buymaterials.php" class="active1" style="color:#FFFFFF;  background: #1cc88a;">Open</a></li>
       <li>|</li>
-      <li><a href="receivedmaterials.php">Done</a></li>
+      <li><a href="receivedmaterials.php">Received Materials</a></li>
     </ul>
 
   </div>
@@ -167,7 +199,7 @@ else{
                 <td><?php echo htmlentities(number_format($row->buy_quantity * $row->purchase_price));?></td>
                 <td><?php echo htmlentities($row->arrival_date);?></td>
 
-                <td><a onclick="return confirm('mark as received?')" href="#">Mark as received</a></td>
+                <td><a onclick="return confirm('mark as received?')" href="buymaterials.php?r_id=<?php echo($row->id);?>">Mark as received</a></td>
               </tr>
             <?php }}?>
 
@@ -177,7 +209,6 @@ else{
       </div>
     </div>
     <!-- /.container-fluid -->
-
     <?php
     include('includes/scripts.php');
     include('includes/footer.php');
