@@ -6,174 +6,122 @@ if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
 else{
-include('includes/header.php');
-include('includes/navbar.php');
-include('includes/topbar.php');
-?>
+  include('includes/header.php');
+  include('includes/navbar.php');
+  include('includes/topbar.php');
+  ?>
 
-<!-- Begin Page Content -->
-<div class="container-fluid">
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
 
-  <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-      class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+      <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+      class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
     </div>
 
     <!-- Content Row -->
     <div class="row">
 
-      <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-12 col-md-12 mb-12">
-          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-            <h2>Work in progress!!!</h2></div>
-        </div>
-
-        <!-- Earnings (Monthly) Card Example -->
-        <!-- <div class="col-xl-3 col-md-6 mb-4">
-         <a href="#">
-          <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                    Orders Inprogress </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="fas fa-spinner fa-2x text-gray-300"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </a>
-          </div>
-
-          <!-- Earnings (Monthly) Card Example
-          <div class="col-xl-3 col-md-6 mb-4">
-          <a href="#">
-            <div class="card border-left-success shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                      Orders Completed </div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">6</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-check fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </a>
-            </div>
-
-            <!-- Pending Requests Card Example
-            <div class="col-xl-3 col-md-6 mb-4">
-              <a href="#">
-              <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                        Orders Delayed</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">4</div>
-                      </div>
-                      <div class="col-auto">
-                        <i class="fas fa-bug fa-2x text-gray-300"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-              </div> -->
-
-              <!-- Area Chart
-              <div class="col-xl-8 col-lg-7">
+              <!-- stock section -->
+              <div class="col-xl-6 col-lg-6">
                 <div class="card shadow mb-4">
                   <!-- Card Header - Dropdown -->
-                  <!-- <div
+                  <div
                   class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-success"> <i class="fas fa-bell fa-fw"></i>New Alerts!</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                  aria-labelledby="dropdownMenuLink">
-                  <div class="dropdown-header">Dropdown Header:</div>
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
+                  <h6 class="m-0 font-weight-bold text-success"><i class="fas fa-bell fa-fw"></i>Stock Alerts</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <ul>
+                    <?php
+                    $sql = "SELECT tbl_stock_material.*, tbl_materials.material_name FROM tbl_stock_material INNER JOIN tbl_materials on tbl_stock_material.material_name = tbl_materials.id where in_stock < 5";
+                    $query = $dbconn -> prepare($sql);
+                    $query->execute();
+                    $results=$query->fetchAll(PDO::FETCH_OBJ);
+                    if($results){
+                      foreach ($results as $result) {
+                        if($result->in_stock < 3){?>
+                          <li><a href="stockmaterials.php"><?php echo htmlentities($result->material_name); ?></a> <span class="badge badge-pill badge-danger float-right"><?php echo ("needs a quick purchase");?></span></li>
+                          <?php }
+                          else{ ?>
+                            <li><a href="stockmaterials.php"><?php echo htmlentities($result->material_name); ?></a> <span style="color: #000" class="badge b badge-pill badge-warning float-right"><?php echo ("consider material purchase");?></span></li>
+                        <?php  }  }
+                      }?>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div> -->
-            <!-- Card Body
-            <div class="card-body">
 
+              <!-- buy material section -->
+              <div class="col-xl-6 col-lg-6">
+                <div class="card shadow mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-success"><i class="fas fa-bell fa-fw"></i>Buy Material Alerts</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <ul>
+                    <?php
+                    $sql = "SELECT tbl_buy_materials.*, tbl_materials.material_name, tbl_materials.default_supplier FROM tbl_buy_materials INNER JOIN tbl_materials on tbl_buy_materials.material_id = tbl_materials.id where status = 0";
+                    $query = $dbconn -> prepare($sql);
+                    $query->execute();
+                    $results=$query->fetchAll(PDO::FETCH_OBJ);
+                    if($results){
+                      foreach ($results as $result) {?>
+                        <?php
+                        $datetime1 = strtotime($result->arrival_date);
+                        $datetime2 = strtotime(date("Y-m-d"));
+
+                        $secs = $datetime1 - $datetime2;// == <seconds between the two times>
+                        $days = $secs / 86400;
+                        if($days == 0){ ?>
+                          <li><a href="buymaterials.php"><?php echo htmlentities($result->material_name); ?></a> purchase <div class="float-right"><span class="badge badge-pill badge-danger"><?php echo ("arrival date is today!");?> </span> contact supplier at
+                            <?php
+                            $supplier = $result->default_supplier;
+                            $sql = "SELECT supplier_email FROM tbl_suppliers WHERE id = :supplier";
+                            $query = $dbconn -> prepare($sql);
+                            $query->bindParam(':supplier',$supplier, PDO::PARAM_INT);
+                            $query->execute();
+                            $results=$query->fetchAll(PDO::FETCH_OBJ);
+                            if($results){
+                              foreach ($results as $result) {?>
+                                <a href="mailto:<?php echo$result->supplier_email; ?>"> <?php echo ($result->supplier_email); ?></a>
+                            <?php  }
+                            }?>
+                          </div></li>
+                        <?php }
+                        else if($days > 0 AND $days <= 2){?>
+                          <li><a href="buymaterials.php"><?php echo htmlentities($result->material_name); ?></a> purchase <span class="badge badge-pill badge-warning float-right"><?php echo ($days."  day(s) to arrival date");?></span></li>
+                        <?php }
+                        else if($days > 2){?>
+                          <li> <a href="buymaterials.php"><?php echo htmlentities($result->material_name); ?></a> purchase <span class="badge badge-pill badge-success float-right"><?php echo ($days."  day(s) to arrival date");?></span></li>
+                        <?php }
+                        else { ?>
+                          <li><a href="buymaterials.php"><?php echo htmlentities($result->material_name); ?></a> purchase<span class="badge badge-pill badge-danger float-right"><?php echo ("purchase is beyond arrival date");?></span></li>
+                        <?php    }
+                      }} ?>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
+
+
           </div>
+          <!-- /.container-fluid -->
+
         </div>
-        <!--
-        <!-- Pie Chart -->
-        <!-- <div class="col-xl-4 col-lg-5">
-          <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <!-- <div
-            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-success">Cost/Benefit</h6>
-            <div class="dropdown no-arrow">
-              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-            aria-labelledby="dropdownMenuLink">
-            <div class="dropdown-header">Dropdown Header:</div>
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </div>
-      </div> -->
-      <!-- Card Body
-      <div class="card-body">
-        <!-- <div class="chart-pie pt-4 pb-2">
-          <canvas id="myPieChart"></canvas>
-        </div>
-        <div class="mt-4 text-center small">
-          <span class="mr-2">
-            <i class="fas fa-circle text-danger"></i> Expenditure
-          </span>
-          <span class="mr-2">
-            <i class="fas fa-circle text-success"></i> Profits
-          </span>
-          <!--  <span class="mr-2">
-          <i class="fas fa-circle text-info"></i> Referral
-        </span>
-      </div>
-    </div>
-  </div>
-</div> -->
-</div>
-
-
-</div>
-<!-- /.container-fluid -->
-
-</div>
-<!-- End of Main Content -->
+        <!-- End of Main Content -->
 
 
 
 
-<?php
-include('includes/scripts.php');
-include('includes/footer.php');
+        <?php
+        include('includes/scripts.php');
+        include('includes/footer.php');
 
-}?>
+      }?>

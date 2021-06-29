@@ -29,22 +29,17 @@
 
               <!-- Nav Item - Charts -->
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="buymaterials.php">
                   <i class="fa fa-dolly"></i>
-                  <span>Manage Stock</span></a>
+                  <span>Buy</span></a>
                 </li>
 
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="stock.php">
                   <i class="fa fa-clipboard-list"></i>
-                    <span>Manage Tasks</span></a>
+                    <span>Stock</span></a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">
-                      <i class="fas fa-shipping-fast"></i>
-                      <span>Request Materials</span></a>
-                    </li>
 
                     <li class="nav-item">
                       <a class="nav-link" href="logout.php">

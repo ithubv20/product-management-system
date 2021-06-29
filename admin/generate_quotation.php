@@ -3,17 +3,16 @@ require ('fpdf/fpdf.php');
 $db = new PDO('mysql:host=localhost;dbname=pms','root','');
 class myPDF extends FPDF{
 	function header(){
-		$this->Image('logo.png',130,10);
+		$this->Image('assets\img\logo\pms_logo.png',130,10);
 		$this->Ln(15);
 		$this->SetFont('Times','B',14);
-		$this->Cell(276,5,'     Alipo Transporters                          EMAIL US:                      SERVICE HELPLINE CALL US:',0,0,'C');
+		$this->Cell(276,5,'    Product management system                          ,0,0,'C');
 		$this->Ln();
 		$this->SetFont('Times','',12);
-		$this->Cell(276,7,'P/Bag 143,Mzuzu                            alipo@gmail.com                                               +265 993 305 832',0,0,'C');
 		$this->Line(0.0, 40.0, 400.0, 40.0);
 		$this->Ln(20);
 		$this->SetFont('Times','B',14);
-		$this->Cell(276,7,'Bookings Report',0,0,'C');
+		$this->Cell(276,7,'Quotation',0,0,'C');
 		$this->Ln();
 	}
 	function footer(){
