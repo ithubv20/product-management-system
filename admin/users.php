@@ -31,6 +31,53 @@ if(isset($_POST['reg_user'])){
     echo ('<script>alert("Sorry, there was an error in adding a new staff.")</script>');
   }
 }
+if(isset($_GET['arch_id'])){
+  $arch_id = intval($_GET['arch_id']);
+  $sql = "UPDATE `users` SET user_status = 1 WHERE user_id = :arch_id";
+  $query = $dbconn -> prepare($sql);
+  $query->bindParam(':arch_id', $arch_id, PDO::PARAM_INT);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ("<script>alert('staff archived successfully')</script>");
+    echo ('<script>window.location.href = "users.php";</script>');
+  }
+  else{
+    echo ("<script>alert('something went wrong')</script>");
+  }
+}
+
+if(isset($_GET['activate_user'])){
+  $activate_user = intval($_GET['activate_user']);
+  $sql = "UPDATE `users` SET user_status = 0 WHERE user_id = :activate_user";
+  $query = $dbconn -> prepare($sql);
+  $query->bindParam(':activate_user', $activate_user, PDO::PARAM_INT);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ("<script>alert('staff activated successfully')</script>");
+    echo ('<script>window.location.href = "users.php";</script>');
+  }
+  else{
+    echo ("<script>alert('something went wrong')</script>");
+  }
+}
+
+if(isset($_GET['make_admin'])){
+  $make_admin = intval($_GET['make_admin']);
+  $sql = "UPDATE `users` SET role = 1 WHERE user_id = :make_admin";
+  $query = $dbconn -> prepare($sql);
+  $query->bindParam(':make_admin', $make_admin, PDO::PARAM_INT);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ("<script>alert('staff role updated successfully')</script>");
+    echo ('<script>window.location.href = "users.php";</script>');
+  }
+  else{
+    echo ("<script>alert('something went wrong')</script>");
+  }
+}
 // --- end of user registration code ---
 
 include('includes/header.php');
@@ -132,79 +179,145 @@ function checkAvailability() {
     </div>
   </div>
 
-  <div class="card-body">
-    <?php
-    if (isset($_SESSION['success']) && $_SESSION['success']!=''){
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Active Users</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Archived Users</a>
+    </li>
+  </ul>
 
-      echo '<h2> '.$_SESSION['success'].' </h2>';
-      unset($_SESSION['success']);
+  <div class="tab-content">
+    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <div class="card-body">
+        <?php
+        if (isset($_SESSION['success']) && $_SESSION['success']!=''){
 
-    }
-    ?>
+          echo '<h2> '.$_SESSION['success'].' </h2>';
+          unset($_SESSION['success']);
 
-    <div class="table-responsive">
+        }
+        ?>
 
-      <?php
-      $connection= mysqli_connect("localhost","root","","pms");
-
-      # inner join statement to fetch data from two database tables (Users and user roles) and merge them into one table of users
-      $query="SELECT Users.full_name, Users.user_name, Users.email, Users.role, user_roles.user_role FROM Users INNER JOIN user_roles ON Users.role = user_roles.user_id";
-      $query_run= mysqli_query($connection, $query);
-
-      ?>
-
-      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
-        <thead>
-          <tr>
-            <th>ID </th>
-            <th>Full name </th>
-            <th>Username </th>
-            <th>Email </th>
-            <th>Role </th>
-            <th>Action </th>
-          </tr>
-        </thead>
-        <tbody>
-
+        <div class="table-responsive">
 
           <?php
+          # inner join statement to fetch data from two database tables (Users and user roles) and merge them into one table of users
+          $sql="SELECT Users.user_id, Users.full_name, Users.user_status, Users.user_name, Users.email, Users.role, user_roles.user_role FROM Users INNER JOIN user_roles ON Users.role = user_roles.user_id WHERE user_status = 0";
           $cnt = 1;
-          if(mysqli_num_rows($query_run) > 0){
-            while ($row= mysqli_fetch_assoc($query_run)) {
+          $query = $dbconn -> prepare($sql);
+          $query->execute();
+          $rows = $query->fetchAll(PDO::FETCH_OBJ);
+          $count = $query->rowCount();
+          ?>
 
-              ?>
-
-
-
-
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
               <tr>
-                <td> <?php echo $cnt; ?> </td>
-                <td> <?php echo $row['full_name']; ?></td>
-                <td> <?php echo $row['user_name']; ?></td>
-                <td> <?php echo $row['email']; ?></td>
-                <td> <?php echo $row['user_role']; ?></td>
-                <td>
-                  <a href="index.php?pid=<?php echo(1);?>"  onclick="return confirm('Edit User?')">Edit</a>
-                  &nbsp | &nbsp
-                  <a style="color: red" href="index.php?pid=<?php echo(1);?>" onclick="return confirm('Delete User?')">Delete</a>
-                </td>
+                <th>ID </th>
+                <th>Full name </th>
+                <th>Username </th>
+                <th>Email </th>
+                <th>Role </th>
+                <th>Action </th>
               </tr>
+            </thead>
+            <tbody>
+
               <?php
-              $cnt++;  }
+              if($count > 0){
+                foreach ($rows as $row) {
+                  ?>
+                  <tr>
+                    <td> <?php echo $cnt; ?> </td>
+                    <td> <?php echo $row->full_name; ?></td>
+                    <td> <?php echo $row->user_name; ?></td>
+                    <td> <?php echo $row->email; ?></td>
+                    <td> <?php echo $row->user_role; ?></td>
+                    <td>
+                      <?php
+                      if($row->user_role == 'admin'){?>
+                        <a style="color: red" href="users.php?arch_id=<?php echo($row->user_id);?>" onclick="return confirm('Send to archive?')">Send to Archive</a>
+                    <?php  }
+                    else{ ?>
+                        <a style="color: red" href="users.php?arch_id=<?php echo($row->user_id);?>" onclick="return confirm('Send to archive?')">Send to Archive</a>&nbsp | &nbsp <a href="users.php?make_admin=<?php echo($row->user_id);?>"  onclick="return confirm('Make admin?')">Make admin</a>
+                <?php    } ?>
+                    </td>
+                  </tr>
+                  <?php
+                  $cnt++;  }
 
-            }
-
-
-
-            ?>
-
-
-          </tbody>
-        </table>
-
-      </div>
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
     </div>
+
+    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <div class="card-body">
+        <?php
+        if (isset($_SESSION['success']) && $_SESSION['success']!=''){
+
+          echo '<h2> '.$_SESSION['success'].' </h2>';
+          unset($_SESSION['success']);
+
+        }
+        ?>
+
+        <div class="table-responsive">
+
+          <?php
+          # inner join statement to fetch data from two database tables (Users and user roles) and merge them into one table of users
+          $sql="SELECT Users.user_id, Users.full_name, Users.user_status, Users.user_name, Users.email, Users.role, user_roles.user_role FROM Users INNER JOIN user_roles ON Users.role = user_roles.user_id WHERE user_status = 1";
+          $cnt = 1;
+          $query = $dbconn -> prepare($sql);
+          $query->execute();
+          $rows = $query->fetchAll(PDO::FETCH_OBJ);
+          $count = $query->rowCount();
+          ?>
+
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID </th>
+                <th>Full name </th>
+                <th>Username </th>
+                <th>Email </th>
+                <th>Role </th>
+                <th>Action </th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <?php
+              if($count > 0){
+                foreach ($rows as $row) {
+                  ?>
+                  <tr>
+                    <td> <?php echo $cnt; ?> </td>
+                    <td> <?php echo $row->full_name; ?></td>
+                    <td> <?php echo $row->user_name; ?></td>
+                    <td> <?php echo $row->email; ?></td>
+                    <td> <?php echo $row->user_role; ?></td>
+                    <td><a  href="users.php?activate_user=<?php echo($row->user_id);?>" onclick="return confirm('Activate this user?')">Activate User</a>
+                    </td>
+                  </tr>
+                  <?php
+                  $cnt++;  }
+
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>
+
   </div>
 
   <?php

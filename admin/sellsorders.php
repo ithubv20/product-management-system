@@ -277,17 +277,17 @@ else{
                         <?php  }
 
                         //production section
-                        if($stock_status != 0 AND $stock_status >  $row->order_quantity){?>
+                        if($stock_status != 0 AND ($stock_status >  $row->order_quantity OR  $stock_status =  $row->order_quantity)){?>
                           <td style="background-color: #34b08b; color: #fff"> Done </td>
                         <?php  }
-                        else if(($stock_status <  $row->order_quantity OR $stock_status == 0) AND $make_status == 0){?>
+                        else if(($stock_status == 0 OR $stock_status <  $row->order_quantity OR  $stock_status =  $row->order_quantity) AND $make_status == 0){?>
                           <td> <a href="sellsorders.php?make_id=<?php echo $order_id ?>"><i class="fa fa-plus-square"></i> Make</a></td>
                         <?php  }
                         else if(($stock_status <  $row->order_quantity OR $stock_status == 0) AND $make_status == 1){?>
-                          <td style="background-color: #bfbfbf; color:#000"> Not started</td>
+                          <td style="background-color: #fea349; color: #000"> Work in progress</td>
                         <?php  }
                         else{ ?>
-                          <td style="background-color: #fea349; color: #000"> Work in progress</td>
+                                  <td style="background-color: #bfbfbf; color:#000"> Not started</td>
                         <?php  }
                             ?>
                         <td class="delivery-background">

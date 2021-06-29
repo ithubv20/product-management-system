@@ -5,6 +5,46 @@ include('../includes/config.php');
 if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
+
+// start of delete unit of measure code
+if(isset($_GET['del_tax'])){
+  $del_tax = intval($_GET['del_tax']);
+
+  $sql ="DELETE FROM `tbl_tax_rates` WHERE id=:del_tax";
+  $query = $dbconn->prepare($sql);
+  $query->bindParam(':del_tax', $del_tax, PDO::PARAM_STR);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ('<script>alert("tax deleted successfully")</script>');
+    echo ('<script>window.location.href = "tax_rates.php";</script>');
+  }
+  else {
+    echo ('<script>alert("Somethin went wrong.")</script>');
+    echo ('<script>window.location.href = "categories.php";</script>');
+  }
+}
+
+if(isset($_POST['save_info'])){
+  $new_tax_name = $_POST['new_tax_name'];
+  $new_tax_desc = $_POST['new_tax_desc'];
+
+  $sql ="INSERT INTO `tbl_tax_rates`(tax_rate, tax_description) VALUES(:new_tax_name, :new_tax_desc)";
+  $query = $dbconn->prepare($sql);
+  $query->bindParam(':new_tax_name', $new_tax_name, PDO::PARAM_STR);
+  $query->bindParam(':new_tax_desc', $new_tax_desc, PDO::PARAM_STR);
+  $query->execute();
+  $lastInsertId = $dbconn->lastInsertId();
+  if($lastInsertId){
+    echo ('<script>alert("a new tax has been added successfully.")</script>');
+    echo ('<script>window.location.href = "tax_rates.php";</script>');
+  }
+  else {
+    echo ('<script>alert("Somethin went wrong.")</script>');
+    echo ('<script>window.location.href = "tax_rates.php";</script>');
+  }
+}
+
 else{
   include('includes/header.php');
   include('includes/navbar.php');
@@ -29,18 +69,31 @@ else{
                   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                       <tr>
-                        <th>Rate </th>
+                        <th>Rate % </th>
                         <th>Tax Name </th>
+                        <th>Action </th>
                       </tr>
                     </thead>
                     <tbody>
+                      <?php
+                      $sql = "SELECT * FROM tbl_tax_rates";
+                      $query = $dbconn->prepare($sql);
+                      $query->execute();
+                      $rows = $query->fetchAll(PDO::FETCH_OBJ);
+                      $count = $query->rowCount($rows);
+                      if($count > 0){
+                        foreach ($rows as $row) {
+                          ?>
                           <tr>
-                            <td class="w-75"> 20% </td>
-                            <td>VAT</td>
+                            <td> <?php echo($row->tax_rate);?> </td>
+                            <td><?php echo($row->tax_description);?></td>
+                            <td>  <a onclick="return confirm('delete tax?');" href="tax_rates.php?del_tax=<?php echo($row->id);?>"> <i class="fas fa-trash-alt"></i></a></td>
                           </tr>
+                            <?php } } ?>
                           <tr id="add_unit_of_measure" hidden>
-                            <td class="w-75"> <input type="text" name="input_of_measure" class="form-control" placeholder="enter percentage" required/> </td>
-                              <td><input type="text" name="input_of_measure" class="form-control" placeholder="desc" required/> </td>
+                            <td class="w-75"> <input type="number" name="new_tax_name" class="form-control" placeholder="enter tax amount" required/>
+                            <input type="text" name="new_tax_desc" class="form-control" placeholder="enter tax description" required/> </td>
+                              <td><input type="submit" name="save_info" class="btn btn-success"/></td>
                           </tr>
                       </tbody>
                     </table>

@@ -7,7 +7,7 @@ if(isset($_POST['login_user'])){
 	$user_email = $_POST['user_email'];
 	$user_password = md5($_POST['user_password']);
 
-	$sql = "SELECT * FROM users WHERE email=:user_email AND user_password=:user_password";
+	$sql = "SELECT * FROM users WHERE email=:user_email AND user_password=:user_password AND user_status = 0";
 	$querry=$dbconn->prepare($sql);
 	$querry->bindParam(':user_email', $user_email, PDO::PARAM_STR);
 	$querry->bindParam(':user_password', $user_password, PDO::PARAM_STR);
@@ -32,7 +32,7 @@ if(isset($_POST['login_user'])){
 
 	}
 	else{
-		echo"<script>alert('something went wrong. please try again')</script>";
+		echo"<script>alert('something went wrong. please contact systems administrator')</script>";
 	}
 
 }
