@@ -13,7 +13,6 @@ if(isset($_POST['submit_order'])){
   $get_id = explode(",", $get_item_id);
   $item_id = $get_id[0];
 
-  echo($order_number.$item_id.$customer_name.$total_price.$end_date);
   $sql = "INSERT INTO `tbl_sales_orders`(order_number, item, order_quantity, customer_name, total_amount, delivery_deadline) VALUES(:order_number, :item_id, :item_quantity, :customer_name, :total_price, :end_date)";
   $query = $dbconn->prepare($sql);
   $query->bindParam(':order_number', $order_number, PDO::PARAM_STR);

@@ -73,7 +73,7 @@ else{
     </div>
     <div class="table-responsive">
       <?php
-      $sql = "SELECT tbl_sales_orders.*, tbl_items.item_name, tbl_items.item_materials, tbl_items.item_operations, tbl_stock.in_stock, tbl_stock.expected_date FROM tbl_sales_orders INNER JOIN tbl_stock ON tbl_sales_orders.item = tbl_stock.item_name INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE make_status = 2";
+      $sql = "SELECT tbl_sales_orders.*, tbl_items.item_name, tbl_items.item_materials, tbl_items.item_operations, tbl_stock.in_stock, tbl_stock.expected_date FROM tbl_sales_orders INNER JOIN tbl_stock ON tbl_sales_orders.item = tbl_stock.item_name INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE order_status < 2 AND make_status = 2";
       $querry=$dbconn->prepare($sql);
       $querry->execute();
       $rows = $querry->fetchAll(PDO::FETCH_OBJ);

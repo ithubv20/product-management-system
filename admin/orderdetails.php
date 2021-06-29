@@ -209,7 +209,7 @@ else{
 
               <div class="col-lg-3 form-group">
                 <label class="tiny-font">Total cost </label>
-                <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities(number_format($result->total_amount));?>" readonly>
+                <input type="text" id="total_production_cost" name="item_name" class="form-select" value="<?php echo htmlentities(number_format($result->total_amount));?>" readonly>
               </div>
               <label><br><strong>Ingredients</strong> </label><br>
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -226,7 +226,7 @@ else{
 
                   <?php
                   $required_materials = unserialize($result->item_materials);
-
+                  $material_cost = 0;
                   foreach ($required_materials as $materials) {
                     // get a sum of prices for all required materials
                     $sql = "SELECT tbl_materials.*, tbl_stock_material.in_stock, tbl_stock_material.m_expected_date FROM  tbl_materials INNER JOIN tbl_stock_material ON tbl_materials.id = tbl_stock_material.material_name WHERE tbl_materials.id = $materials";
@@ -237,16 +237,19 @@ else{
                     $count = $querry->rowCount();
                     if($count > 0)
                     {
-                      foreach($rows as $row) {?>
+                      foreach($rows as $row) {
+                        $material_cost += $row->purchase_price; ?>
                         <tr>
                           <td> <?php echo htmlentities($row->material_name); ?> </td>
-                          <td> <?php echo ($result->order_quantity); ?></td>
-                          <td> <?php echo ($result->order_quantity *  $row->purchase_price); ?></td>
+                          <td> <input onblur="myFunction();" class="form-select" type="text" id="material_quantity" value="<?php echo ($result->order_quantity); ?>"/></td>
+                          <td> <input type="text" id="material_price" value="<?php echo ($row->purchase_price); ?>" hidden/>
+                            <input class="form-select" type="text" id="total_price" value="<?php echo ($row->purchase_price); ?>"/>
+                            </td>
                           <?php
-                          if($row->in_stock != 0){?>
+                          if($row->in_stock > 0){?>
                             <td style="background-color: #34b08b; color: #fff"> in stock </td>
                           <?php  }
-                          else if($row->in_stock  == 0 AND !empty($row->m_expected_date)){?>
+                          else if($row->in_stock  <= 0 AND !empty($row->m_expected_date)){?>
                             <td style="background-color: #fea349; color: #000">
                               Expected<br>
                               <strong> <?php echo($row->m_expected_date);?> </strong></td>
@@ -321,7 +324,7 @@ else{
 
                             <?php
                             $required_operations = unserialize($result->item_operations);
-
+                            $total = 0;
                             foreach ($required_operations as $operations) {
                               // get a sum of prices for all required materials
                               $sql = "SELECT * FROM tbl_operations WHERE id = $operations";
@@ -332,7 +335,8 @@ else{
                               $count = $querry->rowCount();
                               if($count > 0)
                               {
-                                foreach($rows as $row) {?>
+                                foreach($rows as $row) {
+                                  $total+= ($row->time_taken *  $res_amount_per_hour);?>
                                   <tr>
                                     <td> <?php echo htmlentities($row->operation_description); ?> </td>
                                     <td> <?php echo htmlentities($res_name); ?> </td>
@@ -348,7 +352,10 @@ else{
                                       <td style="background-color: #34b08b; color: #fff">Done</td>
                                     <?php  }?>
                                   </tr>
-                                <?php } }}?>
+                                <?php }
+                               }}
+                               ?>
+                               <input type="text" id="overal_total" value="<?php echo ($total + $material_cost);?>" hidden/>
                               </tbody>
                             </table>
                           <?php }}?>
@@ -359,6 +366,17 @@ else{
                   </div>
                 </div>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script>
+                  // A $( document ).ready() block.
+                    $( document ).ready(function() {
+                      var material_price = document.getElementById("material_price").value;
+                      var material_quantity = document.getElementById("material_quantity").value;
+                      document.getElementById("total_price").value = material_quantity * material_price;
+
+                      var total = document.getElementById("overal_total").value;
+                      document.getElementById("total_production_cost").value = +total + +document.getElementById("total_price").value - +material_price;
+                    });
+                </script>
                 <script>
                 function changeProductionStatus(o_id) {
                   var production_status = document.getElementById("production_status").value;
@@ -373,8 +391,16 @@ else{
                     }
                   });
                 }
-                </script>
 
+                function myFunction() {
+                  var material_price = document.getElementById("material_price").value;
+                  var material_quantity = document.getElementById("material_quantity").value;
+                  document.getElementById("total_price").value = material_quantity * material_price;
+
+                  var total = document.getElementById("overal_total").value;
+                  document.getElementById("total_production_cost").value = (+total + +document.getElementById("total_price").value) - +material_price;
+                }
+                </script>
                 <?php
                 include('includes/scripts.php');
                 include('includes/footer.php');

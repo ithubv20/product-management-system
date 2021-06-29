@@ -129,7 +129,7 @@ else{
               ?>
               <tr>
                 <td><?php echo($cnt);?></td>
-                <td><a href="orderdetails.php?order_id=<?php echo($order_id);?>" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->order_number);?></a></td>
+                <td><?php echo htmlentities($row->order_number);?></td>
                 <td><?php echo htmlentities($row->customer_name);?></td>
                 <td><?php echo htmlentities($row->item_name);?></td>
                 <td><?php echo htmlentities($row->order_quantity);?></td>

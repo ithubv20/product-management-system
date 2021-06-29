@@ -171,7 +171,7 @@ else{
                   if($count > 0)
                   {
                     foreach($rows as $row) {
-                      if($row->in_stock == 0){
+                      if($row->in_stock <= 0){
                         $any_stock_out = 'True';
                       }
                       $m_expected_date[] = $row->m_expected_date;
@@ -181,7 +181,7 @@ else{
                 if($any_stock_out == 'False'){?>
                   <td style="background-color: #34b08b; color: #fff"> in stock </td>
                 <?php  }
-                else if($any_stock_out == 'True' AND !empty($m_expected_date)){?>
+                else if($any_stock_out == 'True' AND max($m_expected_date) != 0){?>
                   <td style="background-color: #fea349; color: #000">
                     Expected<br>
                     <strong> <?php echo(max($m_expected_date));?> </strong></td>
@@ -191,11 +191,15 @@ else{
                   <?php  } ?>
 
 
-                  <td class="delivery-background"><select class="form-select delivery-background" name="delivery_status">
-                    <option value="">Not started</option>
-                    <option value="">Work in progress</option>
-                    <option value="1">Done</option>
-                  </select></td>
+                  <?php if($make_status == 1){?>
+                    <td style="background-color: #bfbfbf; color:#000">Not started</td>
+                  <?php  }
+                  else if($make_status == 2){?>
+                    <td style="background-color: #fea349; color: #000">Work in progress</td>
+                  <?php  }
+                  else{ ?>
+                    <td style="background-color: #34b08b; color: #fff">Done</td>
+                  <?php  }?>
                 </tr>
                 <?php $cnt++;}}?>
 

@@ -6,6 +6,24 @@ if (empty($_SESSION['user_id'])){
   header('Location: ../index.php');
 }
 
+if(isset($_POST['update_price'])){
+  $sells_price = $_POST['sells_price'];
+  $prod_id = $_POST['prod_id'];
+
+  $sql ="UPDATE `tbl_items` SET default_sales_price = :sells_price WHERE id=:prod_id";
+  $query = $dbconn->prepare($sql);
+  $query->bindParam(':sells_price', $sells_price, PDO::PARAM_STR);
+  $query->bindParam(':prod_id', $prod_id, PDO::PARAM_STR);
+  $query->execute();
+  $count =$query->rowCount();
+  if($count > 0){
+    echo ('<script>alert("Sells price updated successfully.")</script>');
+    echo ('<script>window.location.href = "items.php";</script>');
+  }
+  else {
+    echo ('<script>alert("Somethin went wrong.")</script>');
+  }
+}
 else{
   include('includes/header.php');
   include('includes/navbar.php');
@@ -134,10 +152,10 @@ else{
   <div class="card-body">
     <div class="container-fluid">
 
-      <form action="items_processor.php" method="POST">
+      <form method="POST">
         <?php
         $o_id=intval($_GET['p_id']);
-        $sql = "SELECT tbl_sales_orders.*, tbl_items.item_name, tbl_items.item_materials, tbl_items.item_operations, tbl_items.item_resources FROM tbl_sales_orders INNER JOIN tbl_items ON tbl_sales_orders.item = tbl_items.id WHERE tbl_sales_orders.id = :o_id";
+        $sql = "SELECT tbl_items.*, tbl_categories.category_description FROM tbl_items INNER JOIN tbl_categories ON tbl_items.category = tbl_categories.id WHERE tbl_items.id = :o_id";
         $query = $dbconn->prepare($sql);
         $query->bindParam(':o_id',$o_id, PDO::PARAM_INT);
         $query->execute();
@@ -146,28 +164,25 @@ else{
           foreach ($results as $result) {
             ?>
             <div class="row">
-              <div class="col-lg-6 form-group">
-                <label class="tiny-font"> Order number </label>
-                <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities($result->order_number);?>" readonly>
-              </div>
-              <div class="col-lg-5 form-group">
-                <label class="tiny-font">Deadline </label>
-                <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities($result->delivery_deadline);?>" readonly>
-              </div>
-
               <div class="col-lg-5 form-group">
                 <label class="tiny-font">Product </label>
                 <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities($result->item_name);?>" readonly>
               </div>
 
+              <input type="text" name="prod_id" value="<?php echo($o_id);?>" hidden/>
+
               <div class="col-lg-3 form-group">
-                <label class="tiny-font">Quantity </label>
-                <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities($result->order_quantity);?>" readonly>
+                <label class="tiny-font">Sells Price </label>
+                <input type="text" name="sells_price" class="form-control" value="<?php echo htmlentities($result->default_sales_price);?>" >
               </div>
 
               <div class="col-lg-3 form-group">
-                <label class="tiny-font">Total cost </label>
-                <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities(number_format($result->total_amount));?>" readonly>
+              <input type="submit" name="update_price" value="Update Price" class="btn btn-success"/>
+              </div>
+              <div class="col-lg-3 form-group">
+                <label class="tiny-font">Code</label>
+                <input type="text" name="item_name" class="form-select" value="<?php echo htmlentities($result->variant_code);?>" readonly>
+              </div>
               </div>
               <label><br><strong>Ingredients</strong> </label><br>
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -175,9 +190,7 @@ else{
                 <thead>
                   <tr>
                     <th>item </th>
-                    <th>quantity </th>
                     <th>cost </th>
-                    <th>availability </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,7 +200,7 @@ else{
 
                   foreach ($required_materials as $materials) {
                     // get a sum of prices for all required materials
-                    $sql = "SELECT tbl_materials.*, tbl_stock_material.in_stock, tbl_stock_material.m_expected_date FROM  tbl_materials INNER JOIN tbl_stock_material ON tbl_materials.id = tbl_stock_material.material_name WHERE tbl_materials.id = $materials";
+                    $sql = "SELECT * FROM tbl_materials WHERE id = $materials";
                     $querry=$dbconn->prepare($sql);
                     //  $querry->bindParam(':materials', $materials, PDO::PARAM_STR);
                     $querry->execute();
@@ -198,20 +211,7 @@ else{
                       foreach($rows as $row) {?>
                         <tr>
                           <td> <?php echo htmlentities($row->material_name); ?> </td>
-                          <td> <?php echo ($result->order_quantity); ?></td>
-                          <td> <?php echo ($result->order_quantity *  $row->purchase_price); ?></td>
-                          <?php
-                          if($row->in_stock != 0){?>
-                            <td style="background-color: #34b08b; color: #fff"> in stock </td>
-                          <?php  }
-                          else if($row->in_stock  == 0 AND !empty($row->m_expected_date)){?>
-                            <td style="background-color: #fea349; color: #000">
-                              Expected<br>
-                              <strong> <?php echo($row->m_expected_date);?> </strong></td>
-                            <?php  }
-                            else{?>
-                              <td style="background-color: #e9004e; color: #fff;">not available</td>
-                            <?php  } ?>
+                          <td> <?php echo ($row->purchase_price); ?></td>
                           </tr>
                         <?php } }}?>
                       </tbody>
@@ -222,24 +222,6 @@ else{
                         <label><br><strong>Operations: </strong> </label>
                       </div>
                       <div><br>
-                        <select id="production_status" onchange="changeProductionStatus(<?php echo $o_id; ?>)" name="production_status" class="col form-select">
-                          <?php if($result->make_status == 1){?>
-                              <option value="1" selected>Not started</option>
-                              <option value="2">Work in progress</option>
-                              <option value="3">Done</option>
-                            <?php }
-                            else if($result->make_status == 2){?>
-                              <option value="1" selected>Not started</option>
-                              <option value="2" selected>Work in progress</option>
-                              <option value="3">Done</option>
-                          <?php  }
-                            else {?>
-                              <option value="1" selected>Not started</option>
-                              <option value="2">Work in progress</option>
-                              <option value="3" selected>Done</option>
-
-                            <?php }?>
-                          <select>
                           </div>
                         </div><br>
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -250,7 +232,6 @@ else{
                               <th>Resource</th>
                               <th>Time </th>
                               <th>Cost </th>
-                              <th>Status </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -296,21 +277,13 @@ else{
                                     <td> <?php echo htmlentities($res_name); ?> </td>
                                     <td> <?php echo ($row->time_taken." hrs"); ?></td>
                                     <td> <?php echo ($row->time_taken *  $res_amount_per_hour); ?></td>
-                                    <?php if($result->make_status == 1){?>
-                                      <td style="background-color: #bfbfbf; color:#000">Not started</td>
-                                    <?php  }
-                                    else if($result->make_status == 2){?>
-                                      <td style="background-color: #fea349; color: #000">Work in progress</td>
-                                    <?php  }
-                                    else{ ?>
-                                      <td style="background-color: #34b08b; color: #fff">Done</td>
-                                    <?php  }?>
+
                                   </tr>
                                 <?php } }}?>
                               </tbody>
                             </table>
                           <?php }}?>
-                        </div>
+
                       </form>
 
                     </div>

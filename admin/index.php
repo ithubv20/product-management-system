@@ -61,7 +61,7 @@ else{
                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                       Orders Inprogress </div>
                       <?php
-                      $sql ="SELECT id FROM tbl_sales_orders WHERE make_status = 2";
+                      $sql ="SELECT id FROM tbl_sales_orders WHERE order_status < 2 AND make_status = 2";
                       $query = $dbconn -> prepare($sql);
                       $query->execute();
                       $results=$query->fetchAll(PDO::FETCH_OBJ);

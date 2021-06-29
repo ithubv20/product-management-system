@@ -158,14 +158,8 @@ else{
                <input type="submit" style="margin-left:70%"class="btn btn-success" name="submit_order" value="save"/>
             </div>
             <div class="form-group">
-              <label id="demo" for="sales_order"> Sales Order </label>
-              <input type="text" size="50" class="form-control" name="order_number" id="sales_order" required>
-            </div>
-
-
-            <div class="form-group">
-              <label for="location"> Location </label>
-              <input type="text" size="50"  class="form-control" name="customer" id="location" required>
+              <label id="demo" for="sales_order"> Sales Order # </label>
+              <input type="text" size="50" class="form-select" name="order_number" id="sales_order" value="<?php echo('PMS-'.rand())?>" readonly>
             </div>
           </div>
           <div class="table-responsive">

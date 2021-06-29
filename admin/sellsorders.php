@@ -218,7 +218,7 @@ else{
                   ?>
                   <tr>
                     <td><?php echo($cnt);?></td>
-                    <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->order_number);?></a></td>
+                    <td><?php echo htmlentities($row->order_number);?></td>
                     <td><?php echo htmlentities($row->customer_name);?></td>
                     <td><?php echo htmlentities(number_format($row->total_amount + ((20 * $row->total_amount)/100)));?></td>
                     <td><?php echo htmlentities($row->delivery_deadline);?></td>
@@ -254,20 +254,21 @@ else{
                         if($count > 0)
                         {
                           foreach($results as $result) {
-                            if($row->in_stock == 0){
+                            if($result->in_stock <= 0){
                               $any_stock_out = 'True';
                             }
                             $m_expected_date[] = $result->m_expected_date;
                           }
                         }
                       }
-                      if($stock_status != 0 AND $stock_status > $row->order_quantity){?>
+
+                      if($stock_status > 0 AND $stock_status > $row->order_quantity){?>
                         <td style="background-color: #34b08b; color: #fff"> processed </td>
                       <?php  }
-                      else if(($stock_status == 0 OR $stock_status != 0) AND $any_stock_out == 'False'){?>
+                      else if(($stock_status <= 0 OR $stock_status != 0) AND $any_stock_out == 'False'){?>
                         <td style="background-color: #34b08b; color: #fff"> in stock </td>
                       <?php  }
-                      else if($any_stock_out == 'True' AND !empty($m_expected_date)){?>
+                      else if($any_stock_out == 'True' AND max($m_expected_date) != 0){?>
                         <td style="background-color: #fea349; color: #000">
                           Expected<br>
                           <strong> <?php echo(max($m_expected_date));?> </strong></td>
@@ -280,10 +281,10 @@ else{
                         if($stock_status != 0 AND ($stock_status >  $row->order_quantity OR  $stock_status =  $row->order_quantity)){?>
                           <td style="background-color: #34b08b; color: #fff"> Done </td>
                         <?php  }
-                        else if(($stock_status == 0 OR $stock_status <  $row->order_quantity OR  $stock_status =  $row->order_quantity) AND $make_status == 0){?>
+                        else if(($stock_status <= 0 OR $stock_status <  $row->order_quantity OR  $stock_status =  $row->order_quantity) AND $make_status == 0){?>
                           <td> <a href="sellsorders.php?make_id=<?php echo $order_id ?>"><i class="fa fa-plus-square"></i> Make</a></td>
                         <?php  }
-                        else if(($stock_status <  $row->order_quantity OR $stock_status == 0) AND $make_status == 1){?>
+                        else if(($stock_status <  $row->order_quantity OR $stock_status <= 0) AND $make_status == 2){?>
                           <td style="background-color: #fea349; color: #000"> Work in progress</td>
                         <?php  }
                         else{ ?>
@@ -327,10 +328,6 @@ else{
                           <th>Order #</th>
                           <th>Customer</th>
                           <th>Total Amount</th>
-                          <th>Delivery Deadline</th>
-                          <th>Sales Items</th>
-                          <th>Ingredients</th>
-                          <th>Production</th>
                           <th>Delivery</th>
 
                         </tr>
@@ -346,13 +343,9 @@ else{
                             ?>
                             <tr>
                               <td><?php echo($cnt);?></td>
-                              <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->order_number);?></a></td>
+                              <td><?php echo htmlentities($row->order_number);?></td>
                               <td><?php echo htmlentities($row->customer_name);?></td>
                               <td><?php echo htmlentities(number_format($row->total_amount + ((20 * $row->total_amount)/100)));?></td>
-                              <td><?php echo htmlentities($row->delivery_deadline);?></td>
-                                  <td style="background-color: #34b08b; color: #fff"> in stock </td>
-                                  <td style="background-color: #34b08b; color: #fff"> processed </td>
-                                    <td style="background-color: #34b08b; color: #fff"> Done </td>
 
                                   <td class="delivery-background">
                                     Delivered</td>

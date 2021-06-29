@@ -27,10 +27,20 @@ if(isset($_POST['create_item'])){
   $query->execute();
   $lastInsertId = $dbconn->lastInsertId();
   if($lastInsertId){
+    $in_stock = 1;
+    $sql = "INSERT INTO `tbl_stock`(item_name, item_category, in_stock) VALUES(:lastInsertId, :item_category, :in_stock)";
+    $query = $dbconn->prepare($sql);
+    $query->bindParam(':lastInsertId', $lastInsertId, PDO::PARAM_STR);
+    $query->bindParam(':item_category', $item_category, PDO::PARAM_STR);
+    $query->bindParam(':in_stock', $in_stock, PDO::PARAM_STR);
+    $query->execute();
+    
     echo ('<script>alert("A new item has been added successfully.")</script>');
     echo ('<script>window.location.href = "items.php";</script>');
   }
   else {
     echo ('<script>alert("Sorry, there was an error in adding a new item.")</script>');
   }
+
+
 }

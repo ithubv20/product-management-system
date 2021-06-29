@@ -136,7 +136,7 @@ else{
             foreach($rows as $row) {
               ?>
           <tr>
-            <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->material_name);?></a></td>
+            <td><?php echo htmlentities($row->material_name);?></td>
             <td><?php echo htmlentities($row->material_code);?></td>
             <td><?php echo htmlentities($row->category_description);?></td>
             <td><?php echo htmlentities($row->supplier_name);?></td>

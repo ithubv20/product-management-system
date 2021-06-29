@@ -180,7 +180,7 @@ else{
     </div>
     <div class="table-responsive">
       <?php
-      $sql = "SELECT tbl_materials.id, tbl_stock_material.in_stock, tbl_stock_material.committed, tbl_stock_material.m_expected_items, tbl_materials.material_name, tbl_materials.material_code, tbl_categories.category_description, tbl_suppliers.supplier_name
+      $sql = "SELECT tbl_materials.id, tbl_stock_material.in_stock, tbl_materials.material_name, tbl_materials.material_code, tbl_categories.category_description, tbl_suppliers.supplier_name
       FROM tbl_stock_material INNER JOIN tbl_materials ON tbl_stock_material.material_name = tbl_materials.id
       INNER JOIN tbl_categories ON tbl_stock_material.material_category = tbl_categories.id
       INNER JOIN tbl_suppliers ON tbl_stock_material.material_supplier = tbl_suppliers.id";
@@ -200,9 +200,6 @@ else{
             <th>Category</th>
             <th>Supplier</th>
             <th>In Stock</th>
-            <th>Expected</th>
-            <th>Committed</th>
-            <th>Missing</th>
             <th>Action</th>
 
           </tr>
@@ -213,21 +210,11 @@ else{
             foreach($rows as $row) {
               ?>
               <tr>
-                <td><a href="#" class="prod" style="color: #1cc88a;"><?php echo htmlentities($row->material_name);?></a></td>
+                <td><?php echo htmlentities($row->material_name);?></td>
                 <td><?php echo htmlentities($row->material_code);?></td>
                 <td><?php echo htmlentities($row->category_description);?></td>
                 <td><?php echo htmlentities($row->supplier_name);?></td>
-                <td><?php echo htmlentities($row->in_stock);?></td>
-                <td><?php echo htmlentities($row->m_expected_items);?></td>
-                <td><?php echo htmlentities($row->committed);?></td>
-                <td><?php $missing = ($row->in_stock + 2) - $row->committed;
-                if($missing < 0){?>
-                  <div style="color:#f40717"><?php echo htmlentities($missing);?></div>
-                <?php }
-                else
-                echo htmlentities(0); ?>
-              </td>
-              <td>
+                <td><?php echo htmlentities($row->in_stock);?></td>              <td>
                 <a onclick="modalFunction(<?php echo($row->id);?>, '<?php echo($row->in_stock);?>', '<?php echo($row->material_name);?>', '<?php echo htmlentities($row->supplier_name);?>');" href="#" class="tiny-font"> <i class="fa fa-plus-square" aria-hidden="true"></i> Buy</a>
               </td>
             </tr>
