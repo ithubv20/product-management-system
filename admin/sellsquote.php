@@ -111,7 +111,7 @@ else{
     <div class="card-header py-3">
       <div class="row mb-12">
         <div class="col mb-7 font-weight-bold text-success"
-        <h6 class="m-0">All</h6>
+        <h6 class="m-0"><a class="btn btn-success" href="generate_quotation.php"> Download Quotation</a></h6>
       </div>
       <div align="right" class="col">
         <a href="createsellsquote.php">

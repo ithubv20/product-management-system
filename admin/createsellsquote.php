@@ -127,11 +127,7 @@ else{
         <div class="col mb-7 font-weight-bold text-success"
         <h6 class="m-0">Create Quotation</h6>
       </div>
-      <div align="right" class="col">
-        <a href="#"  id="print_quotaion" onclick="print_window()">
-          <i class="fa fa-print" aria-hidden="true"></i>
-        </a>
-      </div>
+
     </div>
     </div>
 
